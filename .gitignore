@@ -1,0 +1,55 @@
+# Raw data, model inputs, and externally supplied results
+Data and Models/
+
+# Generated replication outputs
+
+
+# Manuscripts, reports, slides, and local documentation
+doc/
+Paper/
+Conference/
+
+# R session and serialized data artifacts
+.RData
+.Rhistory
+.Rproj.user/
+*.rda
+*.RData
+*.rds
+*.RDS
+
+# Tabular/data extracts
+*.csv
+*.tsv
+*.txt
+*.xlsx
+*.xls
+*.dta
+*.sav
+*.sas7bdat
+*.parquet
+*.feather
+
+# Document and presentation outputs
+*.doc
+*.docx
+*.pdf
+*.rtf
+*.qmd
+*.rmd
+*.Rmd
+*.ppt
+*.pptx
+
+# Image and figure outputs
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.tif
+*.tiff
+*.svg
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
