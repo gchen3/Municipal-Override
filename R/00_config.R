@@ -1,6 +1,7 @@
 required_packages <- c(
   "dplyr", "tidyr", "purrr", "haven", "MASS", "sandwich", "fixest",
-  "modelsummary", "gt", "ggplot2", "readr"
+  "modelsummary", "gt", "ggplot2", "readr", "rdrobust", "rddensity",
+  "broom"
 )
 
 load_required_packages <- function(packages = required_packages) {
@@ -25,11 +26,12 @@ paths <- list(
   data_65 = file.path("Data and Models", "6.5"),
   intermediate = file.path("outputs", "intermediate"),
   tables = file.path("outputs", "tables"),
-  figures = file.path("outputs", "figures")
+  figures = file.path("outputs", "figures"),
+  report = file.path("outputs", "report")
 )
 
 make_output_dirs <- function() {
-  invisible(lapply(paths[c("intermediate", "tables", "figures")], dir.create, recursive = TRUE, showWarnings = FALSE))
+  invisible(lapply(paths[c("intermediate", "tables", "figures", "report")], dir.create, recursive = TRUE, showWarnings = FALSE))
 }
 
 data_65_file <- function(...) {
@@ -81,7 +83,10 @@ variable_labels <- c(
   excessperca = "Excess property tax capacity",
   unabsorbedratio = "Fiscal reserve (%)",
   balance = "Budget balance (%)",
-  turnoutrate = "Override turnout rate"
+  turnoutrate = "Override turnout rate",
+  approval_rate = "Override approval rate",
+  margin_pp = "Approval margin from 50% cutoff",
+  passed = "Override passed"
 )
 
 mean_na <- function(x) {
