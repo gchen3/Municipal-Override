@@ -16,6 +16,33 @@ did_stack_never <- readRDS(file.path(paths$intermediate, "did_repeated_event_sta
   )
 treatment_events <- readRDS(file.path(paths$intermediate, "did_repeated_event_treatment_events.rds"))
 
+add_rating_change_outcomes <- function(data) {
+  data |>
+    dplyr::group_by(stack_id, code) |>
+    dplyr::mutate(
+      baseline_moo_num = MOO_num[rel_year == -1][1],
+      rating_downgrade = dplyr::if_else(
+        !is.na(MOO_num) & !is.na(baseline_moo_num),
+        as.numeric(MOO_num < baseline_moo_num),
+        NA_real_
+      ),
+      rating_upgrade = dplyr::if_else(
+        !is.na(MOO_num) & !is.na(baseline_moo_num),
+        as.numeric(MOO_num > baseline_moo_num),
+        NA_real_
+      ),
+      rating_any_change = dplyr::if_else(
+        !is.na(MOO_num) & !is.na(baseline_moo_num),
+        as.numeric(MOO_num != baseline_moo_num),
+        NA_real_
+      )
+    ) |>
+    dplyr::ungroup()
+}
+
+did_stack_binary <- add_rating_change_outcomes(did_stack)
+did_stack_never_binary <- add_rating_change_outcomes(did_stack_never)
+
 preferred_formula <- MOO_num ~ i(rel_year, treated_event, ref = -1) | stack_id^code + stack_id^year
 municipality_formula <- MOO_num ~ i(rel_year, treated_event, ref = -1) | code + stack_id^year
 simple_formula <- MOO_num ~ i(rel_year, treated_event, ref = -1) | stack_id + code + year
@@ -35,6 +62,25 @@ fit_did <- function(data, formula, model_name) {
   )
 
   list(
+    model_name = model_name,
+    model = model,
+    nobs = nrow(df),
+    n_municipalities = dplyr::n_distinct(df$code),
+    n_stacks = dplyr::n_distinct(df$stack_id)
+  )
+}
+
+fit_binary_did <- function(data, outcome, formula, model_name) {
+  df <- data |>
+    tidyr::drop_na(dplyr::all_of(outcome), code, year, stack_id, rel_year, treated_event)
+
+  model <- tryCatch(
+    fixest::feols(formula, data = df, vcov = ~ code),
+    error = function(e) NULL
+  )
+
+  list(
+    outcome = outcome,
     model_name = model_name,
     model = model,
     nobs = nrow(df),
@@ -112,6 +158,16 @@ extract_event_estimates <- function(fit) {
     dplyr::arrange(model, event_time)
 }
 
+extract_binary_event_estimates <- function(fit) {
+  estimates <- extract_event_estimates(fit)
+  if (nrow(estimates) == 0) {
+    return(estimates |> dplyr::mutate(outcome = fit$outcome, .before = model))
+  }
+
+  estimates |>
+    dplyr::mutate(outcome = fit$outcome, .before = model)
+}
+
 first_time_treated_stacks <- treatment_events |>
   dplyr::filter(prior_oper_success_count == 0) |>
   dplyr::pull(stack_id)
@@ -146,8 +202,82 @@ robustness_fits <- list(
   )
 )
 
+binary_outcomes <- c("rating_downgrade", "rating_upgrade", "rating_any_change")
+
+binary_formula <- function(outcome) {
+  stats::as.formula(paste0(outcome, " ~ i(rel_year, treated_event, ref = -1) | stack_id^code + stack_id^year"))
+}
+
+binary_history_formula <- function(outcome) {
+  stats::as.formula(paste0(
+    outcome,
+    " ~ i(rel_year, treated_event, ref = -1) + ",
+    "prior_oper_success_count + prior_oper_attempt_count + ",
+    "years_since_last_oper_success_filled + post_prior_success | ",
+    "code + stack_id^year"
+  ))
+}
+
+binary_main_fits <- purrr::map(
+  binary_outcomes,
+  \(outcome) list(
+    window_clean_preferred = fit_binary_did(
+      did_stack_binary,
+      outcome,
+      binary_formula(outcome),
+      "window_clean_preferred"
+    )
+  )
+) |>
+  stats::setNames(binary_outcomes)
+
+binary_robustness_fits <- purrr::map(
+  binary_outcomes,
+  \(outcome) list(
+    never_treated_controls = fit_binary_did(
+      did_stack_never_binary,
+      outcome,
+      binary_formula(outcome),
+      "never_treated_controls"
+    ),
+    history_controls = fit_binary_did(
+      did_stack_binary,
+      outcome,
+      binary_history_formula(outcome),
+      "history_controls"
+    ),
+    first_time_treated_events = fit_binary_did(
+      did_stack_binary |> dplyr::filter(stack_id %in% first_time_treated_stacks),
+      outcome,
+      binary_formula(outcome),
+      "first_time_treated_events"
+    ),
+    narrow_window = fit_binary_did(
+      did_stack_binary |> dplyr::filter(rel_year %in% -1:1),
+      outcome,
+      binary_formula(outcome),
+      "narrow_window"
+    ),
+    exclude_nearby_failed_oper_attempts = fit_binary_did(
+      did_stack_binary |> dplyr::filter(stack_id %in% no_nearby_failed_stacks),
+      outcome,
+      binary_formula(outcome),
+      "exclude_nearby_failed_oper_attempts"
+    )
+  )
+) |>
+  stats::setNames(binary_outcomes)
+
 main_results <- purrr::map_dfr(main_fits, extract_event_estimates)
 robustness_results <- purrr::map_dfr(robustness_fits, extract_event_estimates)
+binary_main_results <- purrr::map_dfr(
+  binary_main_fits,
+  \(fits) purrr::map_dfr(fits, extract_binary_event_estimates)
+)
+binary_robustness_results <- purrr::map_dfr(
+  binary_robustness_fits,
+  \(fits) purrr::map_dfr(fits, extract_binary_event_estimates)
+)
 
 plot_data <- main_results |>
   dplyr::filter(model == "window_clean_preferred", event_time %in% -2:2) |>
@@ -191,12 +321,24 @@ readr::write_csv(
   robustness_results,
   file.path(paths$tables, "did_repeated_event_robustness.csv")
 )
+readr::write_csv(
+  binary_main_results,
+  file.path(paths$tables, "did_repeated_event_binary_rating_main.csv")
+)
+readr::write_csv(
+  binary_robustness_results,
+  file.path(paths$tables, "did_repeated_event_binary_rating_robustness.csv")
+)
 saveRDS(
   list(
     main_fits = main_fits,
     robustness_fits = robustness_fits,
     main_results = main_results,
-    robustness_results = robustness_results
+    robustness_results = robustness_results,
+    binary_main_fits = binary_main_fits,
+    binary_robustness_fits = binary_robustness_fits,
+    binary_main_results = binary_main_results,
+    binary_robustness_results = binary_robustness_results
   ),
   file.path(paths$intermediate, "did_repeated_event_models.rds")
 )

@@ -275,7 +275,7 @@ The preferred interpretation is:
 
 The estimand is event-based: it describes changes around successful operating override events, not a one-time transition into treated status.
 
-The main limitation is that override timing remains endogenous. The design improves on simple panel regressions by using local event timing and fixed effects, but it does not have the same institutional cutoff identification as the RD design.
+The main limitation is that override timing remains endogenous. The design improves on simple panel regressions by using local event timing and fixed effects, but it should still be interpreted as a panel event-study design rather than a fully exogenous timing design.
 
 ## Recommended Starting Point
 

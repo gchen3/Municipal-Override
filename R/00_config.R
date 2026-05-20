@@ -1,7 +1,6 @@
 required_packages <- c(
   "dplyr", "tidyr", "purrr", "haven", "MASS", "sandwich", "fixest",
-  "modelsummary", "gt", "ggplot2", "readr", "rdrobust", "rddensity",
-  "broom"
+  "modelsummary", "gt", "ggplot2", "readr", "broom"
 )
 
 load_required_packages <- function(packages = required_packages) {
@@ -84,9 +83,7 @@ variable_labels <- c(
   unabsorbedratio = "Fiscal reserve (%)",
   balance = "Budget balance (%)",
   turnoutrate = "Override turnout rate",
-  approval_rate = "Override approval rate",
-  margin_pp = "Approval margin from 50% cutoff",
-  passed = "Override passed"
+  approval_rate = "Override approval rate"
 )
 
 mean_na <- function(x) {

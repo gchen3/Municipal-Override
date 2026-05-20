@@ -97,6 +97,21 @@ Build a clean R pipeline with `targets` or a simple numbered-script workflow. Us
    - Use clear table titles and notes, but do not require exact visual matching to `Method_Results.docx`.
    - Save all outputs under `outputs/tables/`, `outputs/figures/`, and `outputs/intermediate/`.
 
+9. `R/13_build_did_repeated_event_data.R`
+   - Build stacked repeated-event samples for successful operating override events.
+   - Use clean event windows that reduce overlap from repeated operating override events.
+
+10. `R/14_did_repeated_event_models.R`
+   - Estimate repeated-event robustness models.
+   - Treat binary downgrade, upgrade, and any rating change outcomes as the main repeated-event robustness checks.
+   - Keep numeric Moody's rating models only as secondary rating-notch sensitivity checks.
+
+11. `R/15_did_repeated_event_attempt_failure_models.R`
+   - Estimate attempt and failure repeated-event specifications as exploratory or appendix robustness checks.
+
+12. `R/16_did_repeated_event_all_override_models.R`
+   - Estimate all-override repeated-event specifications as exploratory or appendix robustness checks.
+
 ## Modeling Decisions
 
 Use the 6.5 Mundlak section as the primary model source because the Word document describes Mundlak as the main specification. Treat the earlier non-Mundlak block in the same `.do` file as robustness output.
@@ -135,5 +150,7 @@ The R implementation should replicate the newest Stata workflow first, including
 The target is reproduction of `Method_Results.docx`, so `Tables_mundlak.rtf` logic from the 6.5 script takes priority over older `Tables.rtf` logic.
 
 The separate 2026 figure `.do` file should inform Figure 1 formatting only; the model specification should come from the main 6.5 script and the Word document.
+
+Regression-discontinuity work is not part of the active workflow.
 
 Intermediate workflow outputs should be R-native files such as `.rds` and `.csv`; do not write intermediate `.dta` files unless specifically requested later.
