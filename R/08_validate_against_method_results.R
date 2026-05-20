@@ -2,6 +2,9 @@ source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "purrr", "readr", "xml2"))
 make_output_dirs()
 
+# Guardrail for the Stata-replication track. This script should pass before
+# interpreting edits to R/00-R/08 as preserving the original Method_Results.
+
 method_results_docx <- file.path("Data and Models", "6.22", "Method_Results.docx")
 
 if (!file.exists(file.path(paths$intermediate, "main_mundlak_models.rds"))) {

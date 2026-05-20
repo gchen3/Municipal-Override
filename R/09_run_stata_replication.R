@@ -1,0 +1,8 @@
+source(file.path("R", "01_build_override_panel.R"))
+source(file.path("R", "02_build_regression_data.R"))
+source(file.path("R", "03_descriptives.R"))
+source(file.path("R", "04_models_main_mundlak.R"))
+source(file.path("R", "05_models_robustness.R"))
+source(file.path("R", "06_figure_margins.R"))
+source(file.path("R", "07_render_results.R"))
+source(file.path("R", "08_validate_against_method_results.R"))

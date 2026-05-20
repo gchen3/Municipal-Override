@@ -17,9 +17,13 @@ The active workflow builds a municipality-year analysis file, estimates ordered-
 - `R/06_figure_margins.R` estimates predicted Moody's rating probabilities for override/fiscal-stress groups and writes Figure 1.
 - `R/07_render_results.R` renders available model outputs and writes an output manifest.
 - `R/08_validate_against_method_results.R` checks focal model coefficients and model sample sizes against `Method_Results.docx`.
+- `R/09_run_stata_replication.R` runs the Stata-replication track.
 
 ### Repeated-Event Robustness
 
+- `R/10_run_did_workflow.R` runs the repeated-event DiD extension track.
+- `R/11_run_all_active_workflow.R` runs the Stata-replication track and the DiD extension track.
+- `R/12_did_rating_change_helpers.R` defines shared binary rating-change helpers for the repeated-event scripts.
 - `R/13_build_did_repeated_event_data.R` builds stacked repeated-event samples for successful operating override events.
 - `R/14_did_repeated_event_models.R` estimates repeated-event robustness models, including binary downgrade, upgrade, and any-change outcomes relative to the pre-event rating.
 - `R/15_did_repeated_event_attempt_failure_models.R` estimates repeated-event attempt and failure specifications.

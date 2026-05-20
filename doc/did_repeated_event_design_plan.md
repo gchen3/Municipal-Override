@@ -10,9 +10,15 @@ The design treats each successful operating override municipality-year as a sepa
 
 What happens to Moody's credit ratings around successful operating override events?
 
-Primary outcome:
+Primary outcomes:
 
-- `MOO_num`: numeric Moody's rating from the existing municipality-year regression panel. Higher values indicate better Moody's ratings, so positive estimates mean rating improvement in rating-notch units.
+- `rating_downgrade`: indicator for a lower Moody's rating than the municipality's own pre-event rating at `h = -1`.
+- `rating_upgrade`: indicator for a higher Moody's rating than the municipality's own pre-event rating at `h = -1`.
+- `rating_any_change`: indicator for any Moody's rating change relative to the municipality's own pre-event rating at `h = -1`.
+
+Secondary rating-notch sensitivity outcome:
+
+- `MOO_num`: numeric Moody's rating from the existing municipality-year regression panel. Higher values indicate better Moody's ratings, so positive estimates mean rating improvement in rating-notch units. This is retained as a sensitivity check, not as the preferred outcome.
 
 Primary treatment event:
 
@@ -149,7 +155,8 @@ Core steps:
 7. Create the never-treated robustness control pool.
 8. Attach outcome and covariates by municipality-year.
 9. Construct prior override history variables measured before the focal event year and attach them to all rows in that event stack.
-10. Use all available rows with nonmissing `MOO_num` in model estimation; do not require a balanced Moody's rating window for the main analysis.
+10. Construct rating-change indicators relative to each municipality-stack's `h = -1` Moody's rating.
+11. Use all available rows with nonmissing baseline and event-time ratings for binary rating-change models; do not require a balanced full Moody's rating window for the main analysis.
 
 Recommended saved outputs:
 
@@ -173,13 +180,13 @@ These variables should be included as robustness controls, not as the only ident
 
 ## Main Model
 
-Estimate a stacked event-study DID with the clean treatment events and the window-clean control pool.
+Estimate stacked event-study DID robustness models with the clean treatment events and the window-clean control pool. The preferred repeated-event outcomes are binary rating-change indicators, estimated as fixed-effect linear probability models.
 
-Recommended main specification:
+Recommended binary rating-change specification:
 
 ```r
 did_fit <- fixest::feols(
-  MOO_num ~ i(rel_year, treated_event, ref = -1) |
+  rating_downgrade ~ i(rel_year, treated_event, ref = -1) |
     stack_id^code + stack_id^year,
   data = did_stack,
   vcov = ~ code
@@ -194,7 +201,9 @@ Where:
 - `rel_year` is event time from `-2` to `2`.
 - `treated_event` equals 1 for the treated municipality in its own stack and 0 for controls.
 
-The coefficients on `i(rel_year, treated_event, ref = -1)` estimate within-stack rating changes for the treated municipality relative to controls in the same stack and calendar year, normalized to the year before treatment.
+The coefficients on `i(rel_year, treated_event, ref = -1)` estimate within-stack changes in the probability of downgrade, upgrade, or any rating change for the treated municipality relative to controls in the same stack and calendar year, normalized to the year before treatment.
+
+Numeric rating-notch sensitivity models use the same stacked specification with `MOO_num` as the outcome. These estimates are easier to interpret in rating-notch units, but they impose a stronger cardinal-rating assumption.
 
 ## Alternative Fixed Effects
 
@@ -203,22 +212,22 @@ Depending on collinearity and support, compare these specifications:
 1. Preferred stacked DID specification with stack-specific municipality and calendar-year fixed effects:
 
 ```r
-MOO_num ~ i(rel_year, treated_event, ref = -1) | stack_id^code + stack_id^year
+rating_downgrade ~ i(rel_year, treated_event, ref = -1) | stack_id^code + stack_id^year
 ```
 
 2. Slightly less saturated specification with municipality fixed effects and stack-specific calendar-year fixed effects:
 
 ```r
-MOO_num ~ i(rel_year, treated_event, ref = -1) | code + stack_id^year
+rating_downgrade ~ i(rel_year, treated_event, ref = -1) | code + stack_id^year
 ```
 
 3. Simpler specification with stack, municipality, and calendar-year fixed effects:
 
 ```r
-MOO_num ~ i(rel_year, treated_event, ref = -1) | stack_id + code + year
+rating_downgrade ~ i(rel_year, treated_event, ref = -1) | stack_id + code + year
 ```
 
-Use the preferred stacked DID specification as the main result if it has adequate support and stable estimation. If the saturated fixed effects create collinearity or instability, use `code + stack_id^year` as the fallback main specification and report the limitation explicitly.
+Use the preferred stacked DID specification for binary rating-change robustness checks if it has adequate support and stable estimation. If the saturated fixed effects create collinearity or instability, use `code + stack_id^year` as the fallback specification and report the limitation explicitly.
 
 ## Robustness Checks
 
@@ -257,6 +266,8 @@ Add a model script:
 Save:
 
 - `outputs/intermediate/did_repeated_event_models.rds`
+- `outputs/tables/did_repeated_event_binary_rating_main.csv`
+- `outputs/tables/did_repeated_event_binary_rating_robustness.csv`
 - `outputs/tables/did_repeated_event_main.csv`
 - `outputs/tables/did_repeated_event_robustness.csv`
 - `outputs/figures/did_repeated_event_moodys.png`
@@ -286,8 +297,9 @@ The first implementation should use:
 - Clean treatment rule: no other successful operating override or failed operating attempt within `+/- 2` years.
 - Main controls: window-clean control pool.
 - Robustness controls: never-treated control pool.
-- Outcome: `MOO_num`.
-- Main model: stacked event-study DID with stack-specific municipality and calendar-year fixed effects.
+- Preferred outcomes: `rating_downgrade`, `rating_upgrade`, and `rating_any_change`.
+- Secondary outcome: `MOO_num`.
+- Main repeated-event robustness model: stacked event-study DID with stack-specific municipality and calendar-year fixed effects.
 - Fallback model if needed: municipality fixed effects and stack-specific calendar-year fixed effects.
 - Reference period: `h = -1`.
 - Estimation sample: all observations with nonmissing `MOO_num`.

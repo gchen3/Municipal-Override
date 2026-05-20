@@ -2,6 +2,9 @@ source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "MASS", "sandwich", "fixest", "modelsummary"))
 make_output_dirs()
 
+# Frozen Stata-replication track: these appendix models mirror the validated
+# Method_Results workflow and should not be repurposed for new DiD extensions.
+
 if (!file.exists(file.path(paths$intermediate, "data_for_regression.rds"))) {
   source(file.path("R", "02_build_regression_data.R"))
 }

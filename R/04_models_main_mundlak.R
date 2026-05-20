@@ -2,6 +2,9 @@ source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "MASS", "sandwich", "fixest", "modelsummary"))
 make_output_dirs()
 
+# Frozen Stata-replication track: keep model formulas aligned with
+# Data and Models/6.22/Method_Results.docx unless validation is updated.
+
 if (!file.exists(file.path(paths$intermediate, "data_for_regression.rds"))) {
   source(file.path("R", "02_build_regression_data.R"))
 }
