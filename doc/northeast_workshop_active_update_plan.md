@@ -6,7 +6,7 @@ Update the data, methods, results, robustness, and slide-ready result portions o
 
 Front-section scope decision: do not plan Codex edits for the motivation, Massachusetts Proposition 2 1/2, research questions, or dual-signal framework slides. Those front sections will be updated manually by the user.
 
-The current slide deck is still largely organized around the older Stata-replication framing: all override types, fiscal-stress moderation, turnout, override amounts, lagged frequency effects on ratings, and placeholder tables. The active methods now focus on operating overrides, ordered probit Moody's models with Mundlak controls, fixed-effects models for annual passage percentage, and repeated-event DiD models for binary Moody's rating changes.
+The current slide deck is still largely organized around the older Stata-replication framing: all override types, fiscal-stress moderation, turnout, override amounts, lagged frequency effects on ratings, and placeholder tables. The active methods now focus on operating overrides, ordered probit Moody's models with Mundlak controls, fixed-effects models for annual operating yes-vote percentage, and repeated-event DiD models for binary Moody's rating changes.
 
 Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 models, turnout models, broad all-override results, and DiD models with voter-support outcomes. These will not be regenerated for this workshop update.
 
@@ -32,7 +32,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Current verified counts:
      - Constructed regression panel: 6,669 municipality-year rows, 351 municipalities, continuous 2003-2021.
      - Moody's ordered probit complete cases: 3,550 rows, 265 municipalities, 2003-2015, 2017, 2019-2021.
-     - Passage-percentage fixed-effects complete cases: 1,913 rows, 307 municipalities, continuous 2003-2021.
+     - Operating yes-vote-percentage fixed-effects complete cases: 730 rows, 221 municipalities, continuous 2003-2021.
      - Repeated-event DiD clean event years: 2005-2019, with stacked panel years 2003-2021.
    - Regenerate or verify the data slide from the active workflow rather than relying on the old hard-coded municipality count.
 
@@ -40,20 +40,20 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Current slides list Moody's ratings, override success indicators/percentages, and voter turnout.
    - Active models use:
      - `MOO_ordered` for Moody's ratings.
-     - `yes_percent`, the percentage of override attempts that passed in a municipality-year.
+     - `oper_yes_vote_percent`, total operating override yes votes as a percentage of yes plus no votes in a municipality-year.
      - Binary Moody's rating-change outcomes for repeated-event DiD.
    - Remove turnout as a current outcome.
 
 4. **Independent variables**
    - Current slides include override amounts and fiscal-stress interactions.
-   - Active results use operating attempt/success/failure indicators for ratings and operating annual/three-year counts for passage percentage.
+   - Active results use operating attempt/success/failure indicators for ratings and operating annual/three-year counts for operating yes-vote percentage.
    - Remove fiscal-stress interaction claims from the active results narrative.
 
 5. **Model specifications**
    - Current credit-rating equation is a generic linear model with lagged override terms.
    - Active rating models are ordered probit specifications with Mundlak controls, year indicators, and municipality-clustered standard errors.
    - Current voter-support equation lacks municipality fixed effects and uses generic `Success`.
-   - Active voter-support models are fixed-effects linear models for `yes_percent` with municipality and year fixed effects.
+   - Active voter-support models are fixed-effects linear models for `oper_yes_vote_percent` with municipality and year fixed effects.
    - Add the repeated-event DiD specification from `R/Methods.md`.
 
 6. **Results claims**
@@ -88,7 +88,8 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Produce compact, publication-quality Beamer-friendly tables, not full HTML tables.
    - Candidate outputs:
      - `outputs/tables/northeast_moodys_main.tex`
-     - `outputs/tables/northeast_vote_share_main.tex`
+     - `outputs/tables/northeast_vote_share_annual.tex`
+     - `outputs/tables/northeast_vote_share_cumulative.tex`
      - `outputs/tables/northeast_repeated_event_counts.tex`
      - `outputs/tables/northeast_repeated_event_did_main.tex`
    - Keep tables narrow: show the main operating terms, standard errors, significance markers, observations, municipalities, and model notes.
@@ -109,7 +110,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Avoid old hypothesis language until the active signs, magnitudes, and uncertainty are checked.
    - Suggested summaries:
      - Rating models: operating attempt, success, and failure associations with ordered Moody's ratings.
-     - Passage-percentage models: annual and three-year operating override frequency associations with `yes_percent`.
+     - Yes-vote-percentage models: annual and three-year operating override frequency associations with `oper_yes_vote_percent`.
      - Repeated-event DiD: event-time patterns for downgrade, upgrade, and any rating change around operating attempts, successes, and failures.
 
 4. **File validation**
@@ -133,19 +134,19 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - State:
      - Constructed regression panel years: 2003-2021.
      - Moody's rating model complete-case years: 2003-2015, 2017, and 2019-2021.
-     - Passage-percentage model complete-case years: 2003-2021.
+     - Yes-vote-percentage model complete-case years: 2003-2021.
      - Repeated-event DiD event years: 2005-2019, with stacked observations from 2003-2021.
      - Override timing: source `FiscalYear` shifted forward one year.
      - Main rating outcome: `MOO_ordered`.
-     - Passage outcome: `yes_percent`.
-     - Repeated-event outcomes: `rating_downgrade`, `rating_upgrade`, `rating_any_change`.
+     - Voter-support outcome: `oper_yes_vote_percent`.
+     - Repeated-event outcomes: `rating_downgrade`, `rating_upgrade`.
    - Remove voter turnout variables and broad all-override variables from the active empirical slides.
 
 3. **Model specification slides**
    - Replace the generic credit-rating equation with ordered probit plus Mundlak controls:
      - `MOO_ordered ~ operating term + controls + Mundlak controls + factor(year)`
    - Replace the generic voter-support equation with:
-     - `yes_percent ~ operating frequency + controls | code + year`
+     - `oper_yes_vote_percent ~ operating frequency + controls | code + year`
    - Add the repeated-event DiD formula:
      - `rating_change_outcome ~ i(rel_year, treated_event, ref = -1) | stack_id^code + stack_id^year`
    - Add notes for municipality-clustered standard errors.
@@ -154,7 +155,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Replace "Direct Effects of Property Tax Overrides" with "Operating Overrides and Moody's Ratings."
    - Replace fiscal-stress result slides with active result slides:
      - Recommended replacement: one slide for repeated-event sample construction and one slide for binary rating-change DiD.
-   - Replace "Frequent Overrides and Voter Support" with "Operating Override Frequency and Passage Percentage."
+   - Replace "Frequent Overrides and Voter Support" with "Operating Override Frequency and Yes Votes."
    - Remove "Frequent Overrides and Credit Ratings" unless a new active frequency-on-rating model is generated.
 
 5. **Robustness and conclusion**
@@ -179,10 +180,10 @@ Codex-supported update sections:
 
 5. Data and active sample
 6. Main rating model: ordered probit with Mundlak controls
-7. Passage-percentage model: fixed effects
+7. Yes-vote-percentage model: fixed effects
 8. Repeated-event DiD design
 9. Operating overrides and Moody's ratings
-10. Operating override frequency and passage percentage
+10. Operating override frequency and yes-vote percentage
 11. Repeated-event sample construction
 12. Binary rating-change DiD results
 13. Robustness checks
@@ -190,15 +191,15 @@ Codex-supported update sections:
 
 ## Implementation Checklist
 
-- [ ] Run `R/15_run_all_active_workflow.R`.
-- [ ] Confirm all active outputs listed in `outputs/tables/active_workflow_outputs.csv` exist.
-- [ ] Create publication-quality slide-specific table outputs rather than relying on oversized active HTML tables.
-- [ ] Update `slides/NorthEast_workshop.qmd` section by section.
-- [ ] Remove all placeholder boxes.
-- [ ] Remove unsupported Stata-era result claims.
-- [ ] Confirm the deck references the generated result files.
-- [ ] Do not render the deck.
+- [x] Run `R/15_run_all_active_workflow.R`.
+- [x] Confirm all active outputs listed in `outputs/tables/active_workflow_outputs.csv` exist.
+- [x] Create publication-quality slide-specific table outputs rather than relying on oversized active HTML tables.
+- [x] Update `slides/NorthEast_workshop.qmd` section by section.
+- [x] Remove all placeholder boxes.
+- [x] Remove unsupported Stata-era result claims.
+- [x] Confirm the deck references the generated result files.
+- [x] Do not render the deck.
 
 ## Open Decisions Before Editing Slides
 
-- Whether the final deck should show compact coefficient tables, event-study plots, or both for the repeated-event DiD results.
+- Resolved for this update: the repeated-event DiD results are shown as compact coefficient tables, with event-study figures generated as supporting slide/report artifacts.

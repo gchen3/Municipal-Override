@@ -1,4 +1,4 @@
-did_binary_outcomes <- c("rating_downgrade", "rating_upgrade", "rating_any_change")
+did_binary_outcomes <- c("rating_downgrade", "rating_upgrade")
 
 add_rating_change_outcomes <- function(data, rating_var = "MOO_num", reference_year = -1L) {
   data |>
@@ -13,11 +13,6 @@ add_rating_change_outcomes <- function(data, rating_var = "MOO_num", reference_y
       rating_upgrade = dplyr::if_else(
         !is.na(.data[[rating_var]]) & !is.na(baseline_moo_num),
         as.numeric(.data[[rating_var]] > baseline_moo_num),
-        NA_real_
-      ),
-      rating_any_change = dplyr::if_else(
-        !is.na(.data[[rating_var]]) & !is.na(baseline_moo_num),
-        as.numeric(.data[[rating_var]] != baseline_moo_num),
         NA_real_
       )
     ) |>

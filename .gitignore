@@ -35,13 +35,19 @@ Conference/
 *.pdf
 *.rtf
 *.qmd
+!slides/NorthEast_workshop.qmd
 *.rmd
 *.Rmd
 *.ppt
 *.pptx
 
+# Generated active-workflow preview tables/reports
+outputs/tables/active_operating_*.html
+outputs/report/northeast_event_study_figures.html
+
 # Image and figure outputs
 *.png
+!outputs/figures/northeast_annual_override_amounts.png
 *.jpg
 *.jpeg
 *.gif

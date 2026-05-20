@@ -6,7 +6,7 @@ The active workflow preserves `R/00` through `R/09` as the frozen Stata-replicat
 
 The active cross-sectional panel models focus on operating overrides. The regression panel covers 2003 through 2021. Override activity is shifted forward one year from the source `FiscalYear` before it is joined to the regression panel, so override activity is aligned with the following regression year.
 
-The Moody's rating outcome is `MOO_ordered`, an ordered version of the numeric Moody's rating score. The voter-support outcome is `yes_percent`, the percentage of override attempts that passed in a municipality-year. Municipality-years with no override attempts have missing `yes_percent` and are dropped from the complete-case voter-support models.
+The Moody's rating outcome is `MOO_ordered`, an ordered version of the numeric Moody's rating score. The voter-support outcome is `oper_yes_vote_percent`, the operating override yes-vote percentage in a municipality-year. It is calculated as total yes votes divided by total yes plus no votes across operating override questions. Municipality-years with no operating override vote have missing `oper_yes_vote_percent` and are dropped from the complete-case voter-support models.
 
 The shared time-varying controls are:
 
@@ -36,7 +36,7 @@ outputs/intermediate/active_operating_mundlak_models.rds
 
 ### Voter Support
 
-The voter-support models follow the Stata-replication logic: the annual passage percentage is modeled using the frequency of override activity, not contemporaneous binary passage indicators. The active operating-specific variables are:
+The voter-support models depart from the older Stata-replication outcome by using the actual operating yes-vote percentage rather than the percentage of override questions that passed. The annual yes-vote percentage is modeled using the frequency of override activity, not contemporaneous binary passage indicators. The active operating-specific variables are:
 
 ```r
 oper_attempt_count
@@ -52,12 +52,12 @@ The three-year cumulative variables equal the current year plus the two prior ye
 The voter-support models are fixed-effects linear models with municipality and year fixed effects and municipality-clustered standard errors:
 
 ```r
-yes_percent ~ oper_attempt_count + controls | code + year
-yes_percent ~ oper_success_count + controls | code + year
-yes_percent ~ oper_failure_count + controls | code + year
-yes_percent ~ oper_attempt_cumu_3yr + controls | code + year
-yes_percent ~ oper_success_cumu_3yr + controls | code + year
-yes_percent ~ oper_failure_cumu_3yr + controls | code + year
+oper_yes_vote_percent ~ oper_attempt_count + controls | code + year
+oper_yes_vote_percent ~ oper_success_count + controls | code + year
+oper_yes_vote_percent ~ oper_failure_count + controls | code + year
+oper_yes_vote_percent ~ oper_attempt_cumu_3yr + controls | code + year
+oper_yes_vote_percent ~ oper_success_cumu_3yr + controls | code + year
+oper_yes_vote_percent ~ oper_failure_cumu_3yr + controls | code + year
 ```
 
 These models are written to:
@@ -89,7 +89,6 @@ The binary rating-change outcomes compare each municipality-year rating to its r
 ```r
 rating_downgrade
 rating_upgrade
-rating_any_change
 ```
 
 The preferred repeated-event DiD specification is a fixed-effects linear probability model:

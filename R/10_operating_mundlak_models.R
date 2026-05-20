@@ -26,6 +26,13 @@ operating_counts <- purrr::map_dfr(
     oper_attempt_count = dplyr::n(),
     oper_success_count = sum(WinLoss == "WIN", na.rm = TRUE),
     oper_failure_count = sum(WinLoss == "LOSS", na.rm = TRUE),
+    oper_yes_votes = sum(YesVotes, na.rm = TRUE),
+    oper_total_votes = sum(YesVotes + NoVotes, na.rm = TRUE),
+    oper_yes_vote_percent = dplyr::if_else(
+      oper_total_votes > 0,
+      100 * oper_yes_votes / oper_total_votes,
+      NA_real_
+    ),
     .groups = "drop"
   ) |>
   dplyr::mutate(year = year + 1)
@@ -58,6 +65,7 @@ operating_count_panel <- tidyr::expand_grid(
   dplyr::filter(year >= min(data_for_regression$year, na.rm = TRUE)) |>
   dplyr::select(
     code, year,
+    oper_yes_vote_percent,
     oper_attempt_count, oper_success_count, oper_failure_count,
     oper_attempt_cumu_3yr, oper_success_cumu_3yr, oper_failure_cumu_3yr
   )
@@ -66,7 +74,7 @@ data_for_regression <- data_for_regression |>
   dplyr::left_join(operating_count_panel, by = c("code", "year"))
 
 ordered_outcome <- "MOO_ordered"
-vote_share_outcome <- "yes_percent"
+vote_share_outcome <- "oper_yes_vote_percent"
 
 controls <- c(
   "logpopu", "debtbudg", "unemploy", "revstab", "revperca",
@@ -90,15 +98,16 @@ operating_vote_share_terms <- c(
 
 active_variable_labels <- c(
   variable_labels,
-  oper_binary = "Operating override attempt",
-  oper_binary_win = "Successful operating override",
-  oper_binary_fail = "Failed operating override",
-  oper_attempt_count = "Operating override attempts (count)",
-  oper_success_count = "Successful operating overrides (count)",
-  oper_failure_count = "Failed operating overrides (count)",
-  oper_attempt_cumu_3yr = "3-year cumulative operating override attempts",
-  oper_success_cumu_3yr = "3-year cumulative successful operating overrides",
-  oper_failure_cumu_3yr = "3-year cumulative failed operating overrides"
+  oper_binary = "Override attempt",
+  oper_binary_win = "Successful override",
+  oper_binary_fail = "Failed override",
+  oper_yes_vote_percent = "Yes vote percentage",
+  oper_attempt_count = "Override attempts (count)",
+  oper_success_count = "Successful overrides (count)",
+  oper_failure_count = "Failed overrides (count)",
+  oper_attempt_cumu_3yr = "3-year cumulative override attempts",
+  oper_success_cumu_3yr = "3-year cumulative successful overrides",
+  oper_failure_cumu_3yr = "3-year cumulative failed overrides"
 )
 
 term_variables <- function(terms) {
@@ -192,11 +201,11 @@ write_active_model_table <- function(fits, file_name, title) {
 write_active_model_table(
   operating_moodys_main_fits,
   "active_operating_moodys_main.html",
-  "Active Models: Operating Overrides and Moody's Ratings"
+  "Active Models: Overrides and Moody's Ratings"
 )
 
 write_active_model_table(
   operating_vote_share_main_fits,
   "active_operating_vote_share_main.html",
-  "Active Models: Operating Override Frequency and Yes Vote Share"
+  "Active Models: Override Frequency and Yes Vote Share"
 )

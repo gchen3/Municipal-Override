@@ -116,7 +116,7 @@ readr::write_csv(
 gt::gtsave(
   format_binary_did_table(binary_did_results) |>
     gt::gt() |>
-    gt::tab_header(title = "Active Operating Repeated-Event Binary DiD Estimates"),
+    gt::tab_header(title = "Active Repeated-Event Binary DiD Estimates"),
   file.path(paths$tables, "active_operating_repeated_event_binary_did.html")
 )
 
@@ -127,7 +127,7 @@ readr::write_csv(
 gt::gtsave(
   format_binary_did_table(binary_did_main_results) |>
     gt::gt() |>
-    gt::tab_header(title = "Active Operating Repeated-Event Binary DiD Estimates: Preferred Model"),
+    gt::tab_header(title = "Active Repeated-Event Binary DiD Estimates"),
   file.path(paths$tables, "active_operating_repeated_event_binary_did_main.html")
 )
 
