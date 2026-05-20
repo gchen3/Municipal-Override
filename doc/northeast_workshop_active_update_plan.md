@@ -6,7 +6,7 @@ Update the data, methods, results, robustness, and slide-ready result portions o
 
 Front-section scope decision: do not plan Codex edits for the motivation, Massachusetts Proposition 2 1/2, research questions, or dual-signal framework slides. Those front sections will be updated manually by the user.
 
-The current slide deck is still largely organized around the older Stata-replication framing: all override types, fiscal-stress moderation, turnout, override amounts, lagged frequency effects on ratings, and placeholder tables. The active methods now focus on operating overrides, ordered probit Moody's models with Mundlak controls, fixed-effects models for annual operating yes-vote percentage, and repeated-event DiD models for binary Moody's rating changes.
+The current slide deck is still largely organized around the older Stata-replication framing: all override types, fiscal-stress moderation, turnout, override amounts, lagged frequency effects on ratings, and placeholder tables. The active methods now focus on operating overrides, ordered probit Moody's models with Mundlak controls, a three-year cumulative frequency-on-rating test, fixed-effects models for annual operating yes-vote percentage, and repeated-event DiD models for binary Moody's rating changes.
 
 Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 models, turnout models, broad all-override results, and DiD models with voter-support outcomes. These will not be regenerated for this workshop update.
 
@@ -46,7 +46,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
 
 4. **Independent variables**
    - Current slides include override amounts and fiscal-stress interactions.
-   - Active results use operating attempt/success/failure indicators for ratings and operating annual/three-year counts for operating yes-vote percentage.
+   - Active results use operating attempt/success/failure indicators for ratings, three-year cumulative operating counts for the frequency-on-rating test, and operating annual/three-year counts for operating yes-vote percentage.
    - Remove fiscal-stress interaction claims from the active results narrative.
 
 5. **Model specifications**
@@ -58,7 +58,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
 
 6. **Results claims**
    - Current result slides state support for H1a, H1b, H3, H4a, and H4b.
-   - These claims are not all supported by the active workflow because H3 fiscal-stress moderation, turnout, broad all-override models, voter-support DiD models, amount models, and frequency-on-rating models are not currently active.
+   - These claims are not all supported by the active workflow because H3 fiscal-stress moderation, turnout, broad all-override models, voter-support DiD models, and amount models are not currently active.
    - Replace unsupported claims with active-result summaries after regenerating tables.
 
 7. **Placeholder tables**
@@ -75,6 +75,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Run `R/15_run_all_active_workflow.R`.
    - Expected active outputs:
      - `outputs/tables/active_operating_moodys_main.html`
+     - `outputs/tables/active_operating_moodys_frequency.html`
      - `outputs/tables/active_operating_vote_share_main.html`
      - `outputs/tables/active_operating_repeated_event_sample_counts.csv`
      - `outputs/tables/active_operating_repeated_event_binary_did.csv`
@@ -88,10 +89,13 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Produce compact, publication-quality Beamer-friendly tables, not full HTML tables.
    - Candidate outputs:
      - `outputs/tables/northeast_moodys_main.tex`
+     - `outputs/tables/northeast_moodys_frequency.tex`
      - `outputs/tables/northeast_vote_share_annual.tex`
      - `outputs/tables/northeast_vote_share_cumulative.tex`
      - `outputs/tables/northeast_repeated_event_counts.tex`
      - `outputs/tables/northeast_repeated_event_did_main.tex`
+     - `outputs/tables/northeast_repeated_event_did_downgrade.tex`
+     - `outputs/tables/northeast_repeated_event_did_upgrade.tex`
    - Keep tables narrow: show the main operating terms, standard errors, significance markers, observations, municipalities, and model notes.
    - Apply publication-quality table standards:
      - Use clear model titles and column labels tied to the estimands, not raw object names.
@@ -110,6 +114,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Avoid old hypothesis language until the active signs, magnitudes, and uncertainty are checked.
    - Suggested summaries:
      - Rating models: operating attempt, success, and failure associations with ordered Moody's ratings.
+     - Frequency-on-rating models: three-year cumulative operating override frequency associations with ordered Moody's ratings.
      - Yes-vote-percentage models: annual and three-year operating override frequency associations with `oper_yes_vote_percent`.
      - Repeated-event DiD: event-time patterns for downgrade, upgrade, and any rating change around operating attempts, successes, and failures.
 
@@ -156,7 +161,7 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Replace fiscal-stress result slides with active result slides:
      - Recommended replacement: one slide for repeated-event sample construction and one slide for binary rating-change DiD.
    - Replace "Frequent Overrides and Voter Support" with "Operating Override Frequency and Yes Votes."
-   - Remove "Frequent Overrides and Credit Ratings" unless a new active frequency-on-rating model is generated.
+   - Add "Frequent Overrides and Credit Ratings" for the three-year cumulative frequency-on-rating model.
 
 5. **Robustness and conclusion**
    - Replace the old robustness checklist with active robustness checks:
@@ -183,11 +188,12 @@ Codex-supported update sections:
 7. Yes-vote-percentage model: fixed effects
 8. Repeated-event DiD design
 9. Operating overrides and Moody's ratings
-10. Operating override frequency and yes-vote percentage
-11. Repeated-event sample construction
-12. Binary rating-change DiD results
-13. Robustness checks
-14. Discussion and conclusion
+10. Operating override frequency and Moody's ratings
+11. Operating override frequency and yes-vote percentage
+12. Repeated-event sample construction
+13. Binary rating-change DiD results
+14. Robustness checks
+15. Discussion and conclusion
 
 ## Implementation Checklist
 

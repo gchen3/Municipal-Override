@@ -71,7 +71,19 @@ operating_count_panel <- tidyr::expand_grid(
   )
 
 data_for_regression <- data_for_regression |>
-  dplyr::left_join(operating_count_panel, by = c("code", "year"))
+  dplyr::left_join(operating_count_panel, by = c("code", "year")) |>
+  dplyr::group_by(code) |>
+  dplyr::mutate(
+    dplyr::across(
+      c(
+        oper_attempt_count, oper_success_count, oper_failure_count,
+        oper_attempt_cumu_3yr, oper_success_cumu_3yr, oper_failure_cumu_3yr
+      ),
+      mean_na,
+      .names = "{.col}con"
+    )
+  ) |>
+  dplyr::ungroup()
 
 ordered_outcome <- "MOO_ordered"
 vote_share_outcome <- "oper_yes_vote_percent"
@@ -91,6 +103,12 @@ operating_vote_share_terms <- c(
   attempt_count = "oper_attempt_count",
   success_count = "oper_success_count",
   failure_count = "oper_failure_count",
+  attempt_cumu_3yr = "oper_attempt_cumu_3yr",
+  success_cumu_3yr = "oper_success_cumu_3yr",
+  failure_cumu_3yr = "oper_failure_cumu_3yr"
+)
+
+operating_moodys_frequency_terms <- c(
   attempt_cumu_3yr = "oper_attempt_cumu_3yr",
   success_cumu_3yr = "oper_success_cumu_3yr",
   failure_cumu_3yr = "oper_failure_cumu_3yr"
@@ -151,6 +169,11 @@ operating_moodys_main_fits <- purrr::map(
   fit_operating_ordered
 )
 
+operating_moodys_frequency_fits <- purrr::map(
+  operating_moodys_frequency_terms,
+  fit_operating_ordered
+)
+
 operating_vote_share_main_fits <- purrr::map(
   operating_vote_share_terms,
   fit_operating_vote_share
@@ -158,11 +181,13 @@ operating_vote_share_main_fits <- purrr::map(
 
 operating_mundlak_formulas <- list(
   moodys_main = purrr::map(operating_terms, ordered_mundlak_formula),
+  moodys_frequency = purrr::map(operating_moodys_frequency_terms, ordered_mundlak_formula),
   vote_share_main = purrr::map(operating_vote_share_terms, vote_share_fe_formula)
 )
 
 active_operating_models <- list(
   moodys_main = operating_moodys_main_fits,
+  moodys_frequency = operating_moodys_frequency_fits,
   vote_share_main = operating_vote_share_main_fits
 )
 
@@ -173,9 +198,11 @@ saveRDS(
     outcomes = c(ordered_outcome, vote_share_outcome),
     controls = controls,
     operating_terms = operating_terms,
+    operating_moodys_frequency_terms = operating_moodys_frequency_terms,
     operating_vote_share_terms = operating_vote_share_terms,
     mundlak_terms = list(
-      main = purrr::map(operating_terms, available_con_terms)
+      main = purrr::map(operating_terms, available_con_terms),
+      frequency = purrr::map(operating_moodys_frequency_terms, available_con_terms)
     )
   ),
   file.path(paths$intermediate, "active_operating_mundlak_models.rds")
@@ -202,6 +229,12 @@ write_active_model_table(
   operating_moodys_main_fits,
   "active_operating_moodys_main.html",
   "Active Models: Overrides and Moody's Ratings"
+)
+
+write_active_model_table(
+  operating_moodys_frequency_fits,
+  "active_operating_moodys_frequency.html",
+  "Active Models: Override Frequency and Moody's Ratings"
 )
 
 write_active_model_table(

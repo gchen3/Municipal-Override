@@ -93,6 +93,46 @@ write_tex(
   )
 )
 
+moodys_frequency_specs <- dplyr::tibble(
+  model = c("attempt_cumu_3yr", "success_cumu_3yr", "failure_cumu_3yr"),
+  term = c("oper_attempt_cumu_3yr", "oper_success_cumu_3yr", "oper_failure_cumu_3yr"),
+  label = c("3-year attempt", "3-year success", "3-year failure")
+)
+
+moodys_frequency_rows <- moodys_frequency_specs |>
+  dplyr::mutate(stats = purrr::map2(model, term, ~ coef_row(active_models$fits$moodys_frequency[[.x]], .y))) |>
+  tidyr::unnest(stats)
+
+write_tex(
+  "northeast_moodys_frequency.tex",
+  c(
+    "\\begin{center}",
+    "\\scriptsize",
+    "\\begin{tabular}{lccc}",
+    "\\toprule",
+    paste0(" & ", paste(moodys_frequency_rows$label, collapse = " & "), " \\\\"),
+    "\\midrule",
+    paste0(
+      "Frequency term & ",
+      paste(cell_with_se(moodys_frequency_rows$estimate, moodys_frequency_rows$std_error, moodys_frequency_rows$p_value), collapse = " & "),
+      " \\\\"
+    ),
+    paste0("Observations & ", paste(fmt_int(moodys_frequency_rows$nobs), collapse = " & "), " \\\\"),
+    paste0(
+      "Municipalities & ",
+      paste(fmt_int(moodys_frequency_rows$n_municipalities), collapse = " & "),
+      " \\\\"
+    ),
+    "Controls, Mundlak means & Yes & Yes & Yes \\\\",
+    "Year indicators & Yes & Yes & Yes \\\\",
+    "\\bottomrule",
+    "\\end{tabular}",
+    "\\vspace{0.05cm}",
+    "\\parbox{0.94\\textwidth}{\\tiny Ordered probit models for Moody's ordered rating outcome using three-year cumulative operating override counts. Standard errors in parentheses are clustered by municipality. Moody's complete-case years are 2003--2015, 2017, and 2019--2021. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.}",
+    "\\end{center}"
+  )
+)
+
 vote_specs <- dplyr::tibble(
   model = c(
     "attempt_count", "success_count", "failure_count",
@@ -270,3 +310,45 @@ write_tex(
     "\\end{center}"
   )
 )
+
+write_did_outcome_table <- function(outcome_label, file_name) {
+  rows <- did_rows |>
+    dplyr::filter(.data$outcome_label == .env$outcome_label)
+
+  write_tex(
+    file_name,
+    c(
+      "\\begin{center}",
+      "\\scriptsize",
+      "\\begin{tabular}{lcccc}",
+      "\\toprule",
+      "Event & $h=-2$ & $h=0$ & $h=1$ & $h=2$ \\\\",
+      "\\midrule",
+      apply(
+        rows,
+        1,
+        \(row) paste(
+          row[["event"]],
+          row[["$h=-2$"]],
+          row[["$h=0$"]],
+          row[["$h=1$"]],
+          row[["$h=2$"]],
+          sep = " & "
+        )
+      ) |>
+        paste0(" \\\\"),
+      "\\bottomrule",
+      "\\end{tabular}",
+      "\\vspace{0.05cm}",
+      paste0(
+        "\\parbox{0.94\\textwidth}{\\tiny Repeated-event linear probability models for ",
+        tolower(outcome_label),
+        " outcomes with stack-by-municipality and stack-by-year fixed effects. Coefficients are relative to $h=-1$; standard errors in parentheses are clustered by municipality. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.}"
+      ),
+      "\\end{center}"
+    )
+  )
+}
+
+write_did_outcome_table("Downgrade", "northeast_repeated_event_did_downgrade.tex")
+write_did_outcome_table("Upgrade", "northeast_repeated_event_did_upgrade.tex")

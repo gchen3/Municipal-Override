@@ -170,10 +170,18 @@ $$
 ## Overrides and Moody's Ratings
 
 -   Override attempts and successful overrides are positively associated with ordered Moody's ratings.
--   Failed overrides have a small, imprecise association in the active ordered probit models.
+-   Failed overrides have a small, insignificant association in the active ordered probit models.
 -   These estimates use controls, Mundlak means, year indicators, and municipality-clustered standard errors.
 
 \input{../outputs/tables/northeast_moodys_main.tex}
+
+## Override Frequency and Moody's Ratings
+
+-   Three-year cumulative frequency estimates are negative for attempts, successes, and failures.
+-   The estimates are small and insignificant, so the models do not provide clear support for H3b.
+-   Estimates use controls, Mundlak means, year indicators, and municipality-clustered standard errors.
+
+\input{../outputs/tables/northeast_moodys_frequency.tex}
 
 ## Annual Override Frequency and Yes Votes
 
@@ -186,7 +194,7 @@ $$
 
 ## Three-Year Override Frequency and Yes Votes
 
--   Three-year cumulative attempts are negative but imprecise.
+-   Three-year cumulative attempts are negative but insignificant.
 -   Three-year cumulative successes are positively associated with yes-vote percentages.
 -   Three-year cumulative failures are negatively associated with yes-vote percentages.
 -   Models use municipality and year fixed effects.
@@ -201,20 +209,27 @@ $$
 
 \input{../outputs/tables/northeast_repeated_event_counts.tex}
 
-## Binary Rating-Change DiD Results
+## Repeated-Event DiD: Downgrades
 
--   Event-year upgrade estimates are negative for override attempts and successful overrides.
--   Event-year downgrade estimates are positive for attempts and successes but imprecise.
--   Failed-event post-period downgrade estimates are negative in years $h=1$ and $h=2$.
--   Overall, the binary rating-change DiD evidence is mixed and should be read as a robustness design.
+-   Attempt and success event-year downgrade estimates are positive but insignificant.
+-   Failed-event downgrade estimates are negative in years $h=1$ and $h=2$.
+-   Estimates are relative to $h=-1$ within each stack.
 
-\input{../outputs/tables/northeast_repeated_event_did_main.tex}
+\input{../outputs/tables/northeast_repeated_event_did_downgrade.tex}
+
+## Repeated-Event DiD: Upgrades
+
+-   Upgrade estimates are generally negative for attempts and successful overrides.
+-   Event-year estimates for attempts and successes are statistically significant.
+-   Estimates are relative to $h=-1$ within each stack.
+
+\input{../outputs/tables/northeast_repeated_event_did_upgrade.tex}
 
 ## Event Study: Override Attempts
 
 \vspace{-0.15cm}
 
--   Upgrade probability falls in the event year; downgrade estimates are imprecise.
+-   Upgrade probability falls in the event year; downgrade estimates are insignificant.
 
 ![](../outputs/figures/northeast_event_study_operating_attempt.png){width=100%}
 
@@ -222,7 +237,7 @@ $$
 
 \vspace{-0.15cm}
 
--   Upgrade probability falls in the event year; downgrade estimates remain imprecise.
+-   Upgrade probability falls in the event year; downgrade estimates remain insignificant.
 
 ![](../outputs/figures/northeast_event_study_operating_success.png){width=100%}
 
@@ -239,8 +254,12 @@ $$
 -   Voter support models suggest repeated attempts and failures are associated with lower voter support, while successful histories are associated with higher yes-vote percentages.
 -   Repeated-event DiD models with binary downgrade and upgrade outcomes provide mixed short-window evidence around override events.
 
-## Discussion and Conclusion
--   The findings suggest that tax overrides are a double-edged fiscal tool, with potential benefits and costs that vary depending on their frequency and success.
+## Conclusion and Implications
+
+###
+The findings suggest that tax overrides are a double-edged fiscal tool, with potential benefits and costs that vary depending on their frequency and success.
+
+### For future research:
 -   Under what conditions do overrides become a viable strategy for local governments to cope with fiscal challenges and signal fiscal resilience without eroding political support?
 -   To what extent do override mechanisms reinforce existing fiscal inequalities across communities?
 -   In the context of declining federal and state aid and rising service costs, how can TELs balance fiscal discipline with necessary flexibility?

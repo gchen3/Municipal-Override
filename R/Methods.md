@@ -25,12 +25,21 @@ MOO_ordered ~ oper_binary_win + controls + Mundlak controls + factor(year)
 MOO_ordered ~ oper_binary_fail + controls + Mundlak controls + factor(year)
 ```
 
+The frequency-on-rating test uses three-year cumulative operating override counts:
+
+```r
+MOO_ordered ~ oper_attempt_cumu_3yr + controls + Mundlak controls + factor(year)
+MOO_ordered ~ oper_success_cumu_3yr + controls + Mundlak controls + factor(year)
+MOO_ordered ~ oper_failure_cumu_3yr + controls + Mundlak controls + factor(year)
+```
+
 `oper_binary` indicates any operating override attempt, `oper_binary_win` indicates any successful operating override, and `oper_binary_fail` indicates any failed operating override. The Mundlak controls are municipality-level means of the operating term and the time-varying controls. They adjust for persistent municipality differences that may be correlated with override behavior, while year indicators absorb common shocks. Standard errors are clustered by municipality.
 
 These models are written by `R/10_operating_mundlak_models.R` to:
 
 ```r
 outputs/tables/active_operating_moodys_main.html
+outputs/tables/active_operating_moodys_frequency.html
 outputs/intermediate/active_operating_mundlak_models.rds
 ```
 
@@ -121,4 +130,4 @@ outputs/tables/active_workflow_outputs.csv
 
 ## Current Empirical Design
 
-The preferred main rating models are ordered probit specifications with Mundlak controls and year indicators. The voter-support models use operating override frequency and municipality and year fixed effects. The repeated-event DiD models are robustness checks for binary rating-change outcomes and avoid treating Moody's ratings as cardinal. All active estimation models use municipality-clustered standard errors.
+The preferred main rating models are ordered probit specifications with Mundlak controls and year indicators. The frequency-on-rating models test three-year cumulative operating override counts using the same ordered-probit structure. The voter-support models use operating override frequency and municipality and year fixed effects. The repeated-event DiD models are robustness checks for binary rating-change outcomes and avoid treating Moody's ratings as cardinal. All active estimation models use municipality-clustered standard errors.

@@ -44,6 +44,10 @@ Conference/
 # Generated active-workflow preview tables/reports
 outputs/tables/active_operating_*.html
 outputs/report/northeast_event_study_figures.html
+slides/*.aux
+slides/*.log
+slides/*.tex
+slides/*.vrb
 
 # Image and figure outputs
 *.png
