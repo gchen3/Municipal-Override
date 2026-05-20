@@ -101,8 +101,8 @@ header-includes:
 -   **Rating outcome:** `Rating_ordered`, the ordered Moody's rating score.
 -   **Voter-support outcome:** yes votes as a percentage of total votes in a municipality-year.
 -   **Repeated-event rating-change outcomes:**
-    -   `rating_downgrade`
-    -   `rating_upgrade`
+    -   `Rating_downgrade`
+    -   `Rating_upgrade`
 -   **Override measures:**
     -   Attempt, success, and failure indicators for rating models.
     -   Annual and three-year cumulative attempt, success, and failure counts for yes-vote-percentage models.
@@ -266,7 +266,7 @@ The findings suggest that tax overrides are a double-edged fiscal tool, with pot
 
 ## Thank You
 
-Thank you for your attention.
+Thank you! Questions and comments are welcome.
 
 \vspace{0.5cm}
 
