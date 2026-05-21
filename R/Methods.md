@@ -1,6 +1,22 @@
 # Methods Summary
 
-The active workflow preserves `R/00` through `R/09` as the frozen Stata-replication track. Scripts `R/10` through `R/15` estimate, summarize, and run the current operating-override analyses. `R/15_run_all_active_workflow.R` runs the active workflow end to end.
+The active workflow preserves `R/00` through `R/09` as the frozen Stata-replication track. Scripts `R/10` through `R/18` estimate, summarize, and prepare the current operating-override analyses for `slides/NorthEast_workshop.qmd`. `R/15_run_all_active_workflow.R` runs the active workflow end to end.
+
+## Active Workflow
+
+The active runner sources:
+
+```r
+R/10_operating_mundlak_models.R
+R/12_build_operating_repeated_event_data.R
+R/13_operating_repeated_event_binary_models.R
+R/14_write_active_results_index.R
+R/16_prepare_northeast_workshop_results.R
+R/17_prepare_northeast_event_study_figures.R
+R/18_prepare_northeast_override_amount_figure.R
+```
+
+`R/11_active_model_helpers.R` supplies shared repeated-event outcome and extraction helpers. The active scripts reuse the regression panel produced by the frozen replication track when `outputs/intermediate/data_for_regression.rds` is already available; otherwise they rebuild it from `R/02_build_regression_data.R`.
 
 ## Operating Override Models
 
@@ -17,7 +33,7 @@ logpopu + debtbudg + unemploy + revstab + revperca +
 
 ### Moody's Ratings
 
-Moody's ratings are estimated with ordered probit models because the rating scale is ordinal. The active specifications are:
+Moody's ratings are estimated with ordered probit models because the rating scale is ordinal. The active main specifications are:
 
 ```r
 MOO_ordered ~ oper_binary + controls + Mundlak controls + factor(year)
@@ -35,12 +51,19 @@ MOO_ordered ~ oper_failure_cumu_3yr + controls + Mundlak controls + factor(year)
 
 `oper_binary` indicates any operating override attempt, `oper_binary_win` indicates any successful operating override, and `oper_binary_fail` indicates any failed operating override. The Mundlak controls are municipality-level means of the operating term and the time-varying controls. They adjust for persistent municipality differences that may be correlated with override behavior, while year indicators absorb common shocks. Standard errors are clustered by municipality.
 
-These models are written by `R/10_operating_mundlak_models.R` to:
+`R/10_operating_mundlak_models.R` writes:
 
 ```r
 outputs/tables/active_operating_moodys_main.html
 outputs/tables/active_operating_moodys_frequency.html
 outputs/intermediate/active_operating_mundlak_models.rds
+```
+
+`R/16_prepare_northeast_workshop_results.R` converts those model objects into slide-ready tables:
+
+```r
+outputs/tables/northeast_moodys_main.tex
+outputs/tables/northeast_moodys_frequency.tex
 ```
 
 ### Voter Support
@@ -69,11 +92,18 @@ oper_yes_vote_percent ~ oper_success_cumu_3yr + controls | code + year
 oper_yes_vote_percent ~ oper_failure_cumu_3yr + controls | code + year
 ```
 
-These models are written to:
+`R/10_operating_mundlak_models.R` writes:
 
 ```r
 outputs/tables/active_operating_vote_share_main.html
 outputs/intermediate/active_operating_mundlak_models.rds
+```
+
+`R/16_prepare_northeast_workshop_results.R` converts these results into:
+
+```r
+outputs/tables/northeast_vote_share_annual.tex
+outputs/tables/northeast_vote_share_cumulative.tex
 ```
 
 ## Repeated-Event DiD for Binary Rating Changes
@@ -93,7 +123,7 @@ window_clean   # controls with no same-type event in the local window
 never_treated  # controls that never have that same event type
 ```
 
-The binary rating-change outcomes compare each municipality-year rating to its rating at `h = -1` within the stack:
+The binary rating-change outcomes compare each municipality-year Moody's rating to its rating at `h = -1` within the stack:
 
 ```r
 rating_downgrade
@@ -109,7 +139,7 @@ rating_change_outcome ~ i(rel_year, treated_event, ref = -1) |
 
 Standard errors are clustered by municipality. The workflow also estimates robustness variants using never-treated controls, prior operating-event history controls, first-time events only, and a narrower `h = -1, 0, 1` window. The history-control robustness model uses `code + stack_id^year` fixed effects because the prior-history variables vary at the stack-by-municipality level.
 
-These models are written by `R/12_build_operating_repeated_event_data.R` and `R/13_operating_repeated_event_binary_models.R` to:
+`R/12_build_operating_repeated_event_data.R` and `R/13_operating_repeated_event_binary_models.R` write:
 
 ```r
 outputs/tables/active_operating_repeated_event_sample_counts.csv
@@ -127,6 +157,55 @@ outputs/intermediate/active_operating_repeated_event_binary_models.rds
 ```r
 outputs/tables/active_workflow_outputs.csv
 ```
+
+`R/16_prepare_northeast_workshop_results.R` converts the preferred repeated-event estimates and sample counts into slide-ready tables:
+
+```r
+outputs/tables/northeast_repeated_event_counts.tex
+outputs/tables/northeast_repeated_event_did_main.tex
+outputs/tables/northeast_repeated_event_did_downgrade.tex
+outputs/tables/northeast_repeated_event_did_upgrade.tex
+```
+
+`R/17_prepare_northeast_event_study_figures.R` writes slide-ready event-study figures and an HTML preview report:
+
+```r
+outputs/figures/northeast_event_study_operating_attempt.png
+outputs/figures/northeast_event_study_operating_success.png
+outputs/figures/northeast_event_study_operating_failure.png
+outputs/report/northeast_event_study_figures.html
+```
+
+## Override Amount Figure
+
+`R/18_prepare_northeast_override_amount_figure.R` aggregates annual Massachusetts override amounts, converts them to 2021 dollars, and writes the opening slide figure:
+
+```r
+outputs/figures/northeast_annual_override_amounts.csv
+outputs/figures/northeast_annual_override_amounts.png
+```
+
+Only the PNG is used directly by `slides/NorthEast_workshop.qmd`.
+
+## Slide Deck Inputs
+
+`slides/NorthEast_workshop.qmd` currently reads these active outputs:
+
+```r
+outputs/figures/northeast_annual_override_amounts.png
+outputs/tables/northeast_moodys_main.tex
+outputs/tables/northeast_moodys_frequency.tex
+outputs/tables/northeast_vote_share_annual.tex
+outputs/tables/northeast_vote_share_cumulative.tex
+outputs/tables/northeast_repeated_event_counts.tex
+outputs/tables/northeast_repeated_event_did_downgrade.tex
+outputs/tables/northeast_repeated_event_did_upgrade.tex
+outputs/figures/northeast_event_study_operating_attempt.png
+outputs/figures/northeast_event_study_operating_success.png
+outputs/figures/northeast_event_study_operating_failure.png
+```
+
+`outputs/tables/northeast_repeated_event_did_main.tex` is generated by the active workflow but is not currently included in the slide deck.
 
 ## Current Empirical Design
 

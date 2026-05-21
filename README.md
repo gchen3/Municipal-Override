@@ -1,47 +1,86 @@
 # Municipal Override Project
 
-This project analyzes Massachusetts municipal override elections and their relationship to municipal credit ratings, fiscal conditions, and voter turnout. The current codebase is organized as a reproducible R workflow under `R/`, with intermediate data, tables, figures, and reports written under `outputs/`.
+This project analyzes Massachusetts municipal override elections and their relationship to municipal credit ratings and voter support. The codebase is organized as a numbered R workflow under `R/`, with generated intermediate files, tables, figures, and reports written under `outputs/`.
 
-## Current Workflow
+## Current Active Workflow
 
-The active workflow builds a municipality-year analysis file, estimates ordered-response panel models, and runs repeated-event robustness checks for operating overrides.
+The current active analysis focuses on operating overrides. It estimates ordered-response Moody's rating models, voter-support models, and repeated-event DiD robustness checks for binary Moody's rating changes. Run the active workflow with:
 
-### Panel and Mundlak Models
+```r
+source(file.path("R", "15_run_all_active_workflow.R"))
+```
 
-- `R/00_config.R` defines package loading, project-relative paths, variable labels, CPI values, panel helpers, model wrappers, clustered variance estimators, and table-writing utilities.
-- `R/01_build_override_panel.R` combines operating, capital, debt, and stabilization override files into municipality-year override measures.
-- `R/02_build_regression_data.R` merges the override panel with fiscal data and Moody's/S&P ratings, constructs inflation-adjusted fiscal variables, lagged override measures, 3-year cumulative measures, fiscal-stress indicators, and Mundlak municipality means.
-- `R/03_descriptives.R` produces descriptive statistics and credit-rating observation summaries.
-- `R/04_models_main_mundlak.R` estimates the main ordered probit models with Mundlak controls and year indicators.
-- `R/05_models_robustness.R` estimates appendix robustness tables.
-- `R/06_figure_margins.R` estimates predicted Moody's rating probabilities for override/fiscal-stress groups and writes Figure 1.
-- `R/07_render_results.R` renders available model outputs and writes an output manifest.
-- `R/08_validate_against_method_results.R` checks focal model coefficients and model sample sizes against `Method_Results.docx`.
-- `R/09_run_stata_replication.R` runs the Stata-replication track.
+`R/15_run_all_active_workflow.R` runs these scripts in order:
 
-### Repeated-Event Robustness
+1. `R/10_operating_mundlak_models.R`
+   - Builds operating-override annual and three-year cumulative measures.
+   - Estimates ordered probit Moody's models with Mundlak controls and year indicators.
+   - Estimates two-way fixed-effects voter-support models for operating yes-vote percentage.
+2. `R/12_build_operating_repeated_event_data.R`
+   - Builds repeated-event stacks for operating override attempts, successes, and failures.
+   - Uses a five-year event window from `h = -2` through `h = 2`.
+3. `R/13_operating_repeated_event_binary_models.R`
+   - Estimates binary downgrade and upgrade DiD models with stack-by-municipality and stack-by-year fixed effects.
+   - Writes preferred estimates and robustness variants.
+4. `R/14_write_active_results_index.R`
+   - Writes an index of active generated outputs.
+5. `R/16_prepare_northeast_workshop_results.R`
+   - Converts active model results into compact slide-ready LaTeX tables.
+6. `R/17_prepare_northeast_event_study_figures.R`
+   - Writes event-study figures for operating attempts, successes, and failures.
+7. `R/18_prepare_northeast_override_amount_figure.R`
+   - Writes the annual override-amount figure used in the slide deck.
 
-- `R/10_run_did_workflow.R` runs the repeated-event DiD extension track.
-- `R/11_run_all_active_workflow.R` runs the Stata-replication track and the DiD extension track.
-- `R/12_did_rating_change_helpers.R` defines shared binary rating-change helpers for the repeated-event scripts.
-- `R/13_build_did_repeated_event_data.R` builds stacked repeated-event samples for successful operating override events.
-- `R/14_did_repeated_event_models.R` estimates repeated-event robustness models, including binary downgrade, upgrade, and any-change outcomes relative to the pre-event rating.
-- `R/15_did_repeated_event_attempt_failure_models.R` estimates repeated-event attempt and failure specifications.
-- `R/16_did_repeated_event_all_override_models.R` estimates repeated-event specifications using all override types.
+The Northeast workshop slide deck is `slides/NorthEast_workshop.qmd`. It uses the slide-ready outputs:
 
-## Current Empirical Strategy
+- `outputs/figures/northeast_annual_override_amounts.png`
+- `outputs/tables/northeast_moodys_main.tex`
+- `outputs/tables/northeast_moodys_frequency.tex`
+- `outputs/tables/northeast_vote_share_annual.tex`
+- `outputs/tables/northeast_vote_share_cumulative.tex`
+- `outputs/tables/northeast_repeated_event_counts.tex`
+- `outputs/tables/northeast_repeated_event_did_downgrade.tex`
+- `outputs/tables/northeast_repeated_event_did_upgrade.tex`
+- `outputs/figures/northeast_event_study_operating_attempt.png`
+- `outputs/figures/northeast_event_study_operating_success.png`
+- `outputs/figures/northeast_event_study_operating_failure.png`
 
-The main credit-rating results use ordered probit models with Mundlak controls and year indicators. This treats Moody's ratings as ordered categories rather than as a continuous scale.
+## Frozen Stata-Replication Track
 
-The repeated-event robustness checks use binary rating-change outcomes:
+Scripts `R/00` through `R/09` preserve the earlier Stata-replication workflow. They build the municipality-year regression panel, estimate the main and appendix replication tables, render reports, and validate selected results against `Data and Models/6.22/Method_Results.docx`.
 
-- downgrade relative to the municipality's pre-event rating,
-- upgrade relative to the municipality's pre-event rating,
-- any rating change relative to the municipality's pre-event rating.
+Run the frozen replication workflow with:
 
-These binary outcomes are estimated with fixed-effect linear probability models in a stacked repeated-event design.
+```r
+source(file.path("R", "09_run_stata_replication.R"))
+```
 
-Numeric Moody's rating models are retained only as secondary rating-notch sensitivity checks.
+The main frozen scripts are:
+
+- `R/00_config.R`: shared paths, package loading, labels, model helpers, and table-writing utilities.
+- `R/01_build_override_panel.R`: combines override source files into municipality-year override measures.
+- `R/02_build_regression_data.R`: merges override, fiscal, and rating data and constructs regression variables.
+- `R/03_descriptives.R`: writes descriptive and credit-rating summary tables.
+- `R/04_models_main_mundlak.R`: estimates main replication tables.
+- `R/05_models_robustness.R`: estimates appendix robustness tables.
+- `R/06_figure_margins.R`: writes the older Figure 1 predicted-probability output.
+- `R/07_render_results.R`: renders replication outputs and an output manifest.
+- `R/08_validate_against_method_results.R`: checks focal replication results against `Method_Results.docx`.
+
+The frozen replication outputs are retained for comparison and archival use. The active Northeast workflow should be treated as the current model path for the slide deck.
+
+## Empirical Strategy
+
+The active rating models use ordered probit specifications because Moody's ratings are ordinal. They include time-varying controls, Mundlak municipality means, year indicators, and municipality-clustered standard errors.
+
+The active voter-support models use operating yes-vote percentage as the outcome and estimate two-way fixed-effects linear models with municipality and year fixed effects.
+
+The active repeated-event design estimates binary rating-change outcomes:
+
+- downgrade relative to the municipality's `h = -1` Moody's rating,
+- upgrade relative to the municipality's `h = -1` Moody's rating.
+
+The preferred repeated-event comparison pool uses window-clean controls with no same-type operating override event inside the local event window. Robustness variants use never-treated controls, prior-history controls, first-time events, and a narrower event window.
 
 ## Reproducibility Notes
 
