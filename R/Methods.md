@@ -1,6 +1,6 @@
 # Methods Summary
 
-The active workflow preserves `R/00` through `R/09` as the frozen Stata-replication track. Scripts `R/10` through `R/18` estimate, summarize, and prepare the current operating-override analyses for `slides/NorthEast_workshop.qmd`. `R/15_run_all_active_workflow.R` runs the active workflow end to end.
+The active workflow preserves `R/00` through `R/09` as the frozen Stata-replication track. Scripts `R/10` through `R/14` estimate, summarize, and prepare the current operating-override analyses for `slides/NorthEast_workshop.qmd`. `R/run_active_workflow.R` runs the active workflow end to end.
 
 ## Active Workflow
 
@@ -8,15 +8,13 @@ The active runner sources:
 
 ```r
 R/10_operating_mundlak_models.R
-R/12_build_operating_repeated_event_data.R
-R/13_operating_repeated_event_binary_models.R
-R/16_prepare_northeast_workshop_results.R
-R/17_prepare_northeast_event_study_figures.R
-R/18_prepare_northeast_override_amount_figure.R
-R/14_write_active_results_index.R
+R/11_build_operating_repeated_event_data.R
+R/12_operating_repeated_event_binary_models.R
+R/13_prepare_slide_tables.R
+R/14_prepare_slide_figures.R
 ```
 
-`R/11_active_model_helpers.R` supplies shared repeated-event outcome and extraction helpers. The active scripts reuse the regression panel produced by the frozen replication track when `outputs/intermediate/data_for_regression.rds` is already available; otherwise they rebuild it from `R/02_build_regression_data.R`.
+`R/active_helpers.R` supplies shared active workflow definitions, labels, formatting helpers, and repeated-event model helpers. The active scripts reuse the regression panel produced by the frozen replication track when `outputs/intermediate/data_for_regression.rds` is already available; otherwise they rebuild it from `R/02_build_regression_data.R`.
 
 ## Operating Override Models
 
@@ -59,7 +57,7 @@ outputs/tables/active_operating_moodys_frequency.html
 outputs/intermediate/active_operating_mundlak_models.rds
 ```
 
-`R/16_prepare_northeast_workshop_results.R` converts those model objects into slide-ready tables:
+`R/13_prepare_slide_tables.R` converts those model objects into slide-ready tables:
 
 ```r
 outputs/tables/northeast_moodys_main.tex
@@ -99,7 +97,7 @@ outputs/tables/active_operating_vote_share_main.html
 outputs/intermediate/active_operating_mundlak_models.rds
 ```
 
-`R/16_prepare_northeast_workshop_results.R` converts these results into:
+`R/13_prepare_slide_tables.R` converts these results into:
 
 ```r
 outputs/tables/northeast_vote_share_annual.tex
@@ -139,7 +137,7 @@ rating_change_outcome ~ i(rel_year, treated_event, ref = -1) |
 
 Standard errors are clustered by municipality. The workflow also estimates robustness variants using never-treated controls, prior operating-event history controls, first-time events only, and a narrower `h = -1, 0, 1` window. The history-control robustness model uses `code + stack_id^year` fixed effects because the prior-history variables vary at the stack-by-municipality level.
 
-`R/12_build_operating_repeated_event_data.R` and `R/13_operating_repeated_event_binary_models.R` write:
+`R/11_build_operating_repeated_event_data.R` and `R/12_operating_repeated_event_binary_models.R` write:
 
 ```r
 outputs/tables/active_operating_repeated_event_sample_counts.csv
@@ -152,13 +150,9 @@ outputs/intermediate/active_operating_repeated_event_data.rds
 outputs/intermediate/active_operating_repeated_event_binary_models.rds
 ```
 
-`R/12_build_operating_repeated_event_data.R` also writes event-specific sample-count tables and stack files for operating attempts, successes, and failures. After the active model, table, and figure scripts run, `R/14_write_active_results_index.R` writes:
+`R/11_build_operating_repeated_event_data.R` also writes event-specific sample-count tables and stack files for operating attempts, successes, and failures.
 
-```r
-outputs/tables/active_workflow_outputs.csv
-```
-
-`R/16_prepare_northeast_workshop_results.R` converts the preferred repeated-event estimates and sample counts into slide-ready tables:
+`R/13_prepare_slide_tables.R` converts the preferred repeated-event estimates and sample counts into slide-ready tables:
 
 ```r
 outputs/tables/northeast_repeated_event_counts.tex
@@ -167,7 +161,7 @@ outputs/tables/northeast_repeated_event_did_downgrade.tex
 outputs/tables/northeast_repeated_event_did_upgrade.tex
 ```
 
-`R/17_prepare_northeast_event_study_figures.R` writes slide-ready event-study figures and an HTML preview report:
+`R/14_prepare_slide_figures.R` writes slide-ready event-study figures and an HTML preview report:
 
 ```r
 outputs/figures/northeast_event_study_operating_attempt.png
@@ -178,7 +172,7 @@ outputs/report/northeast_event_study_figures.html
 
 ## Override Amount Figure
 
-`R/18_prepare_northeast_override_amount_figure.R` aggregates annual nominal Massachusetts override amounts and writes the opening slide figure:
+`R/14_prepare_slide_figures.R` also aggregates annual nominal Massachusetts override amounts and writes the opening slide figure:
 
 ```r
 outputs/figures/northeast_annual_override_amounts.csv

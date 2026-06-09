@@ -7,29 +7,27 @@ This project analyzes Massachusetts municipal override elections and their relat
 The current active analysis focuses on operating overrides. It estimates ordered-response Moody's rating models, voter-support models, and repeated-event DiD robustness checks for binary Moody's rating changes. Run the active workflow with:
 
 ```r
-source(file.path("R", "15_run_all_active_workflow.R"))
+source(file.path("R", "run_active_workflow.R"))
 ```
 
-`R/15_run_all_active_workflow.R` runs these scripts in order:
+`R/run_active_workflow.R` runs these scripts in order:
 
 1. `R/10_operating_mundlak_models.R`
    - Builds operating-override annual and three-year cumulative measures.
    - Estimates ordered probit Moody's models with Mundlak controls and year indicators.
    - Estimates two-way fixed-effects voter-support models for operating yes-vote percentage.
-2. `R/12_build_operating_repeated_event_data.R`
+2. `R/11_build_operating_repeated_event_data.R`
    - Builds repeated-event stacks for operating override attempts, successes, and failures.
    - Uses a five-year event window from `h = -2` through `h = 2`.
-3. `R/13_operating_repeated_event_binary_models.R`
+3. `R/12_operating_repeated_event_binary_models.R`
    - Estimates binary downgrade and upgrade DiD models with stack-by-municipality and stack-by-year fixed effects.
    - Writes preferred estimates and robustness variants.
-4. `R/16_prepare_northeast_workshop_results.R`
+4. `R/13_prepare_slide_tables.R`
    - Converts active model results into compact slide-ready LaTeX tables.
-5. `R/17_prepare_northeast_event_study_figures.R`
-   - Writes event-study figures for operating attempts, successes, and failures.
-6. `R/18_prepare_northeast_override_amount_figure.R`
-   - Writes the annual override-amount figure used in the slide deck.
-7. `R/14_write_active_results_index.R`
-   - Writes an index of active generated outputs after the model, table, and figure artifacts are created.
+5. `R/14_prepare_slide_figures.R`
+   - Writes the annual override-amount figure, event-study figures, and event-study preview report.
+
+`R/active_helpers.R` supplies shared active workflow definitions, labels, formatting helpers, and repeated-event model helpers.
 
 The Northeast workshop slide deck is `slides/NorthEast_workshop.qmd`. It uses the slide-ready outputs:
 

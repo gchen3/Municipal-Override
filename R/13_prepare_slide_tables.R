@@ -1,6 +1,7 @@
 source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "purrr", "readr"))
 make_output_dirs()
+source(file.path("R", "active_helpers.R"))
 
 active_models <- readRDS(file.path(paths$intermediate, "active_operating_mundlak_models.rds"))
 did_main <- readr::read_csv(
@@ -11,47 +12,6 @@ sample_counts <- readr::read_csv(
   file.path(paths$tables, "active_operating_repeated_event_sample_counts.csv"),
   show_col_types = FALSE
 )
-
-stars <- function(p_value) {
-  dplyr::case_when(
-    is.na(p_value) ~ "",
-    p_value < 0.01 ~ "***",
-    p_value < 0.05 ~ "**",
-    p_value < 0.10 ~ "*",
-    TRUE ~ ""
-  )
-}
-
-fmt_num <- function(x, digits = 3) {
-  x <- ifelse(abs(x) < 0.5 * 10^-digits, 0, x)
-  ifelse(is.na(x), "", formatC(x, format = "f", digits = digits))
-}
-
-fmt_int <- function(x) {
-  formatC(as.integer(round(x)), format = "d", big.mark = ",")
-}
-
-coef_row <- function(fit, term) {
-  estimate <- unname(stats::coef(fit$model)[[term]])
-  std_error <- sqrt(diag(fit$vcov))[[term]]
-  p_value <- 2 * stats::pnorm(abs(estimate / std_error), lower.tail = FALSE)
-
-  dplyr::tibble(
-    estimate = estimate,
-    std_error = std_error,
-    p_value = p_value,
-    nobs = nrow(fit$data),
-    n_municipalities = dplyr::n_distinct(fit$data$code)
-  )
-}
-
-write_tex <- function(file_name, lines) {
-  writeLines(lines, file.path(paths$tables, file_name), useBytes = TRUE)
-}
-
-cell_with_se <- function(estimate, std_error, p_value) {
-  paste0(fmt_num(estimate), stars(p_value), " (", fmt_num(std_error), ")")
-}
 
 moodys_specs <- dplyr::tibble(
   model = c("attempt", "success", "failure"),
@@ -197,37 +157,19 @@ write_vote_share_table(
   "Linear fixed-effects models for annual operating yes-vote percentage using three-year cumulative operating override counts."
 )
 
-count_metrics <- c(
-  focal_event_years = "Focal event years",
-  municipalities_with_focal_event = "Event municipalities",
-  clean_treatment_events = "Clean events",
-  clean_treated_municipalities = "Clean municipalities"
-)
-
-control_metrics <- c(
-  control_event_municipality_pairs = "Window-clean control pairs",
-  unique_control_municipalities = "Window-clean control municipalities"
-)
-
-event_labels <- c(
-  operating_attempt = "Attempt",
-  operating_success = "Success",
-  operating_failure = "Failure"
-)
-
 overall_counts <- sample_counts |>
-  dplyr::filter(sample == "overall", group == "all", metric %in% names(count_metrics)) |>
-  dplyr::mutate(metric = count_metrics[metric])
+  dplyr::filter(sample == "overall", group == "all", metric %in% names(repeated_event_count_metrics)) |>
+  dplyr::mutate(metric = repeated_event_count_metrics[metric])
 
 control_counts <- sample_counts |>
-  dplyr::filter(sample == "window_clean", group == "control", metric %in% names(control_metrics)) |>
-  dplyr::mutate(metric = control_metrics[metric])
+  dplyr::filter(sample == "window_clean", group == "control", metric %in% names(repeated_event_control_metrics)) |>
+  dplyr::mutate(metric = repeated_event_control_metrics[metric])
 
 counts_wide <- dplyr::bind_rows(overall_counts, control_counts) |>
-  dplyr::mutate(event = event_labels[event_type]) |>
+  dplyr::mutate(event = event_table_labels[event_type]) |>
   dplyr::select(event, metric, value) |>
   tidyr::pivot_wider(names_from = metric, values_from = value) |>
-  dplyr::arrange(match(event, unname(event_labels)))
+  dplyr::arrange(match(event, unname(event_table_labels)))
 
 write_tex(
   "northeast_repeated_event_counts.tex",
@@ -263,22 +205,17 @@ write_tex(
   )
 )
 
-did_labels <- c(
-  rating_downgrade = "Downgrade",
-  rating_upgrade = "Upgrade"
-)
-
 did_rows <- did_main |>
   dplyr::filter(event_time != -1) |>
   dplyr::mutate(
-    event = event_labels[event_type],
-    outcome_label = did_labels[outcome],
+    event = event_table_labels[event_type],
+    outcome_label = did_outcome_labels[outcome],
     event_time = paste0("$h=", event_time, "$"),
     cell = cell_with_se(estimate, std_error, p_value)
   ) |>
   dplyr::select(event, outcome_label, event_time, cell) |>
   tidyr::pivot_wider(names_from = event_time, values_from = cell) |>
-  dplyr::arrange(match(event, unname(event_labels)), match(outcome_label, unname(did_labels)))
+  dplyr::arrange(match(event, unname(event_table_labels)), match(outcome_label, unname(did_outcome_labels)))
 
 write_tex(
   "northeast_repeated_event_did_main.tex",

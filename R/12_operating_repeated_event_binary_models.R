@@ -1,10 +1,10 @@
 source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "purrr", "fixest", "gt", "readr"))
 make_output_dirs()
-source(file.path("R", "11_active_model_helpers.R"))
+source(file.path("R", "active_helpers.R"))
 
 if (!file.exists(file.path(paths$intermediate, "active_operating_repeated_event_data.rds"))) {
-  source(file.path("R", "12_build_operating_repeated_event_data.R"))
+  source(file.path("R", "11_build_operating_repeated_event_data.R"))
 }
 
 operating_repeated_event_data <- readRDS(

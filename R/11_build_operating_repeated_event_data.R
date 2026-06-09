@@ -1,13 +1,14 @@
 source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "purrr", "gt", "readr"))
 make_output_dirs()
+source(file.path("R", "active_helpers.R"))
 
 if (!file.exists(file.path(paths$intermediate, "data_for_regression.rds"))) {
   source(file.path("R", "02_build_regression_data.R"))
 }
 
-event_window <- 2L
-event_times <- -event_window:event_window
+event_window <- active_event_window
+event_times <- active_event_times
 
 panel <- readRDS(file.path(paths$intermediate, "data_for_regression.rds")) |>
   dplyr::arrange(code, year) |>
@@ -17,13 +18,6 @@ panel <- readRDS(file.path(paths$intermediate, "data_for_regression.rds")) |>
     oper_failure_event = oper_binary_fail == 1,
     oper_status_missing = is.na(oper_binary) | is.na(oper_binary_win) | is.na(oper_binary_fail)
   )
-
-operating_event_definitions <- tibble::tribble(
-  ~event_type, ~event_variable, ~event_label, ~file_stub,
-  "operating_attempt", "oper_attempt_event", "Operating Override Attempt", "oper_attempt",
-  "operating_success", "oper_success_event", "Successful Operating Override", "oper_success",
-  "operating_failure", "oper_failure_event", "Failed Operating Override", "oper_failure"
-)
 
 attach_prior_history <- function(stack_rows, focal_variable) {
   stack_base <- stack_rows |>

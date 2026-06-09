@@ -1,6 +1,7 @@
 source(file.path("R", "00_config.R"))
 load_required_packages(c("dplyr", "tidyr", "purrr", "haven", "MASS", "sandwich", "fixest", "modelsummary", "readr"))
 make_output_dirs()
+source(file.path("R", "active_helpers.R"))
 
 if (!file.exists(file.path(paths$intermediate, "data_for_regression.rds"))) {
   source(file.path("R", "02_build_regression_data.R"))
@@ -8,15 +9,8 @@ if (!file.exists(file.path(paths$intermediate, "data_for_regression.rds"))) {
 
 data_for_regression <- readRDS(file.path(paths$intermediate, "data_for_regression.rds"))
 
-override_files <- c(
-  "override_override.dta",
-  "override_capital.dta",
-  "override_debt.dta",
-  "override_stable.dta"
-)
-
 operating_counts <- purrr::map_dfr(
-  data_65_file(override_files),
+  data_65_file(override_source_files),
   haven::read_dta
 ) |>
   dplyr::mutate(year = FiscalYear) |>
@@ -88,57 +82,17 @@ data_for_regression <- data_for_regression |>
 ordered_outcome <- "MOO_ordered"
 vote_share_outcome <- "oper_yes_vote_percent"
 
-controls <- c(
-  "logpopu", "debtbudg", "unemploy", "revstab", "revperca",
-  "excessperca", "unabsorbedratio", "balance"
-)
-
-operating_terms <- c(
-  attempt = "oper_binary",
-  success = "oper_binary_win",
-  failure = "oper_binary_fail"
-)
-
-operating_vote_share_terms <- c(
-  attempt_count = "oper_attempt_count",
-  success_count = "oper_success_count",
-  failure_count = "oper_failure_count",
-  attempt_cumu_3yr = "oper_attempt_cumu_3yr",
-  success_cumu_3yr = "oper_success_cumu_3yr",
-  failure_cumu_3yr = "oper_failure_cumu_3yr"
-)
-
-operating_moodys_frequency_terms <- c(
-  attempt_cumu_3yr = "oper_attempt_cumu_3yr",
-  success_cumu_3yr = "oper_success_cumu_3yr",
-  failure_cumu_3yr = "oper_failure_cumu_3yr"
-)
-
-active_variable_labels <- c(
-  variable_labels,
-  oper_binary = "Override attempt",
-  oper_binary_win = "Successful override",
-  oper_binary_fail = "Failed override",
-  oper_yes_vote_percent = "Yes vote percentage",
-  oper_attempt_count = "Override attempts (count)",
-  oper_success_count = "Successful overrides (count)",
-  oper_failure_count = "Failed overrides (count)",
-  oper_attempt_cumu_3yr = "3-year cumulative override attempts",
-  oper_success_cumu_3yr = "3-year cumulative successful overrides",
-  oper_failure_cumu_3yr = "3-year cumulative failed overrides"
-)
-
 term_variables <- function(terms) {
   unique(all.vars(stats::as.formula(paste("~", paste(terms, collapse = " + ")))))
 }
 
-available_con_terms <- function(main_terms, controls_used = controls) {
+available_con_terms <- function(main_terms, controls_used = active_controls) {
   candidates <- c(term_variables(main_terms), controls_used)
   con_candidates <- paste0(candidates, "con")
   unique(con_candidates[con_candidates %in% names(data_for_regression)])
 }
 
-ordered_mundlak_formula <- function(main_terms, controls_used = controls) {
+ordered_mundlak_formula <- function(main_terms, controls_used = active_controls) {
   rhs_formula(
     ordered_outcome,
     c(main_terms, controls_used, available_con_terms(main_terms, controls_used)),
@@ -146,18 +100,18 @@ ordered_mundlak_formula <- function(main_terms, controls_used = controls) {
   )
 }
 
-vote_share_fe_formula <- function(main_terms, controls_used = controls) {
+vote_share_fe_formula <- function(main_terms, controls_used = active_controls) {
   fe_formula(vote_share_outcome, c(main_terms, controls_used))
 }
 
-fit_operating_ordered <- function(main_terms, controls_used = controls) {
+fit_operating_ordered <- function(main_terms, controls_used = active_controls) {
   fit_ordered_probit(
     ordered_mundlak_formula(main_terms, controls_used),
     data_for_regression
   )
 }
 
-fit_operating_vote_share <- function(main_terms, controls_used = controls) {
+fit_operating_vote_share <- function(main_terms, controls_used = active_controls) {
   fit_fe_lm(
     vote_share_fe_formula(main_terms, controls_used),
     data_for_regression
@@ -196,7 +150,7 @@ saveRDS(
     fits = active_operating_models,
     formulas = operating_mundlak_formulas,
     outcomes = c(ordered_outcome, vote_share_outcome),
-    controls = controls,
+    controls = active_controls,
     operating_terms = operating_terms,
     operating_moodys_frequency_terms = operating_moodys_frequency_terms,
     operating_vote_share_terms = operating_vote_share_terms,
