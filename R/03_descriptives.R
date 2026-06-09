@@ -63,8 +63,12 @@ readr::write_csv(descriptives, file.path(paths$tables, "appendix_A2_descriptives
 readr::write_csv(credit_rating_observations, file.path(paths$tables, "appendix_A1_credit_rating_observations.csv"))
 readr::write_csv(credit_rating_by_year, file.path(paths$tables, "appendix_A1_credit_rating_by_year.csv"))
 
-descriptives |>
+descriptives_table <- descriptives |>
   gt::gt() |>
   gt::fmt_number(columns = c(mean, sd, min, max), decimals = 2) |>
-  gt::tab_header(title = "Appendix Table A2. Descriptive Statistics") |>
-  suppressWarnings(gt::gtsave(file.path(paths$tables, "appendix_A2_descriptives.html")))
+  gt::tab_header(title = "Appendix Table A2. Descriptive Statistics")
+
+suppressWarnings(gt::gtsave(
+  descriptives_table,
+  file.path(paths$tables, "appendix_A2_descriptives.html")
+))

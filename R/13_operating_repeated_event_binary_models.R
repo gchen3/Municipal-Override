@@ -97,6 +97,26 @@ binary_did_results <- dplyr::bind_rows(purrr::map(operating_binary_did, "results
 binary_did_main_results <- binary_did_results |>
   dplyr::filter(model == "window_clean_preferred")
 
+preferred_failures <- binary_did_main_results |>
+  dplyr::filter(model_failed) |>
+  dplyr::distinct(event_type, outcome, error_message)
+
+if (nrow(preferred_failures) > 0) {
+  stop(
+    "Preferred repeated-event DiD models failed: ",
+    paste(
+      paste(
+        preferred_failures$event_type,
+        preferred_failures$outcome,
+        preferred_failures$error_message,
+        sep = " / "
+      ),
+      collapse = "; "
+    ),
+    call. = FALSE
+  )
+}
+
 format_binary_did_table <- function(results) {
   results |>
     dplyr::arrange(event_type, outcome, model, event_time) |>
@@ -135,7 +155,10 @@ saveRDS(
   list(
     results = binary_did_results,
     outcomes = did_binary_outcomes,
-    history_covariates = history_covariates
+    history_covariates = history_covariates,
+    model_failures = binary_did_results |>
+      dplyr::filter(model_failed) |>
+      dplyr::distinct(event_type, control_pool, outcome, model, error_message)
   ),
   file.path(paths$intermediate, "active_operating_repeated_event_binary_models.rds")
 )

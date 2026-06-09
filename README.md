@@ -22,14 +22,14 @@ source(file.path("R", "15_run_all_active_workflow.R"))
 3. `R/13_operating_repeated_event_binary_models.R`
    - Estimates binary downgrade and upgrade DiD models with stack-by-municipality and stack-by-year fixed effects.
    - Writes preferred estimates and robustness variants.
-4. `R/14_write_active_results_index.R`
-   - Writes an index of active generated outputs.
-5. `R/16_prepare_northeast_workshop_results.R`
+4. `R/16_prepare_northeast_workshop_results.R`
    - Converts active model results into compact slide-ready LaTeX tables.
-6. `R/17_prepare_northeast_event_study_figures.R`
+5. `R/17_prepare_northeast_event_study_figures.R`
    - Writes event-study figures for operating attempts, successes, and failures.
-7. `R/18_prepare_northeast_override_amount_figure.R`
+6. `R/18_prepare_northeast_override_amount_figure.R`
    - Writes the annual override-amount figure used in the slide deck.
+7. `R/14_write_active_results_index.R`
+   - Writes an index of active generated outputs after the model, table, and figure artifacts are created.
 
 The Northeast workshop slide deck is `slides/NorthEast_workshop.qmd`. It uses the slide-ready outputs:
 

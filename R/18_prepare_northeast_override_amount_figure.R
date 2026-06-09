@@ -9,14 +9,15 @@ override_files <- c(
   "override_stable.dta"
 )
 
+override_amount_years <- 2010:2025
+
 annual_override_amounts <- purrr::map_dfr(
   data_65_file(override_files),
   haven::read_dta
 ) |>
   dplyr::filter(
     .data$Override == "operating",
-    .data$FiscalYear >= 2010,
-    .data$FiscalYear <= 2025
+    .data$FiscalYear %in% override_amount_years
   ) |>
   dplyr::group_by(year = .data$FiscalYear) |>
   dplyr::summarise(
@@ -25,7 +26,7 @@ annual_override_amounts <- purrr::map_dfr(
     .groups = "drop"
   ) |>
   tidyr::complete(
-    year = 2010:2025,
+    year = override_amount_years,
     fill = list(attempt_amount_millions = 0, success_amount_millions = 0)
   )
 
@@ -54,7 +55,7 @@ override_amount_plot <- ggplot2::ggplot(
 ) +
   ggplot2::geom_line(linewidth = 1) +
   ggplot2::geom_point(size = 2) +
-  ggplot2::scale_x_continuous(breaks = 2010:2025) +
+  ggplot2::scale_x_continuous(breaks = override_amount_years) +
   ggplot2::scale_y_continuous(
     labels = function(x) paste0("$", scales::comma(x)),
     breaks = scales::breaks_width(10),
@@ -66,7 +67,7 @@ override_amount_plot <- ggplot2::ggplot(
   ggplot2::labs(
     title = "Override attempts and successful overrides, 2010-2025",
     x = NULL,
-    y = "Amount ($ millions)",
+    y = "Nominal amount ($ millions)",
     color = NULL
   ) +
   ggplot2::theme_minimal(base_size = 14) +

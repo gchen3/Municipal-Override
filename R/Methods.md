@@ -10,10 +10,10 @@ The active runner sources:
 R/10_operating_mundlak_models.R
 R/12_build_operating_repeated_event_data.R
 R/13_operating_repeated_event_binary_models.R
-R/14_write_active_results_index.R
 R/16_prepare_northeast_workshop_results.R
 R/17_prepare_northeast_event_study_figures.R
 R/18_prepare_northeast_override_amount_figure.R
+R/14_write_active_results_index.R
 ```
 
 `R/11_active_model_helpers.R` supplies shared repeated-event outcome and extraction helpers. The active scripts reuse the regression panel produced by the frozen replication track when `outputs/intermediate/data_for_regression.rds` is already available; otherwise they rebuild it from `R/02_build_regression_data.R`.
@@ -152,7 +152,7 @@ outputs/intermediate/active_operating_repeated_event_data.rds
 outputs/intermediate/active_operating_repeated_event_binary_models.rds
 ```
 
-`R/12_build_operating_repeated_event_data.R` also writes event-specific sample-count tables and stack files for operating attempts, successes, and failures. `R/14_write_active_results_index.R` writes:
+`R/12_build_operating_repeated_event_data.R` also writes event-specific sample-count tables and stack files for operating attempts, successes, and failures. After the active model, table, and figure scripts run, `R/14_write_active_results_index.R` writes:
 
 ```r
 outputs/tables/active_workflow_outputs.csv
@@ -178,7 +178,7 @@ outputs/report/northeast_event_study_figures.html
 
 ## Override Amount Figure
 
-`R/18_prepare_northeast_override_amount_figure.R` aggregates annual Massachusetts override amounts, converts them to 2021 dollars, and writes the opening slide figure:
+`R/18_prepare_northeast_override_amount_figure.R` aggregates annual nominal Massachusetts override amounts and writes the opening slide figure:
 
 ```r
 outputs/figures/northeast_annual_override_amounts.csv

@@ -36,15 +36,25 @@ fit_binary_did <- function(data, outcome, formula, model_name) {
   df <- data |>
     tidyr::drop_na(dplyr::all_of(required_vars))
 
-  model <- tryCatch(
-    fixest::feols(formula, data = df, vcov = ~ code),
-    error = function(e) NULL
+  fit_result <- tryCatch(
+    list(
+      model = fixest::feols(formula, data = df, vcov = ~ code),
+      error_message = NA_character_
+    ),
+    error = function(e) {
+      list(
+        model = NULL,
+        error_message = conditionMessage(e)
+      )
+    }
   )
 
   list(
     outcome = outcome,
     model_name = model_name,
-    model = model,
+    model = fit_result$model,
+    model_failed = is.null(fit_result$model),
+    error_message = fit_result$error_message,
     nobs = nrow(df),
     n_municipalities = dplyr::n_distinct(df$code),
     n_stacks = dplyr::n_distinct(df$stack_id)
@@ -82,7 +92,9 @@ extract_event_estimates <- function(fit, event_type, control_pool) {
     ci_upper = NA_real_,
     nobs = fit$nobs,
     n_municipalities = fit$n_municipalities,
-    n_stacks = fit$n_stacks
+    n_stacks = fit$n_stacks,
+    model_failed = isTRUE(fit$model_failed),
+    error_message = fit$error_message
   )
 
   if (is.null(fit$model)) {
@@ -102,11 +114,14 @@ extract_event_estimates <- function(fit, event_type, control_pool) {
       nobs = fit$nobs,
       n_municipalities = fit$n_municipalities,
       n_stacks = fit$n_stacks,
+      model_failed = isTRUE(fit$model_failed),
+      error_message = fit$error_message,
       .before = term
     ) |>
     dplyr::select(
       event_type, control_pool, outcome, model, event_time, term, estimate,
-      std_error, p_value, ci_lower, ci_upper, nobs, n_municipalities, n_stacks
+      std_error, p_value, ci_lower, ci_upper, nobs, n_municipalities, n_stacks,
+      model_failed, error_message
     )
 
   dplyr::bind_rows(base_row, estimates) |>
