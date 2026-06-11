@@ -72,29 +72,16 @@ Use this template for each entry:
 ```md
 ## model_id
 
-- Label:
-- Model family:
-- Source script:
-- Model type:
-- Main fit command:
-- R function/package:
-- Dependent variable:
-- Key independent variables or event indicators:
-- Controls:
-- Mundlak controls:
-- Fixed effects:
-- Year indicators:
-- Standard error type:
-- Clustering variable:
-- Standard error implementation:
-- Standard error fallback behavior:
-- Weights:
-- Sample restrictions:
-- Missing-data rule:
-- Event window:
-- Treatment/event definition:
-- Control/comparison group:
-- Downgrade/upgrade definition:
+- Label / model family:
+- Source script / main fit command:
+- Model type / R function or package:
+- Outcome:
+- Key variables or event indicators:
+- Controls / Mundlak controls:
+- Fixed effects / year indicators:
+- Standard errors: type, cluster, implementation, fallback behavior
+- Sample: weights, restrictions, missing-data rule
+- Event design: window, treatment, comparison group, downgrade/upgrade definition
 - Output files:
 - Source-code evidence:
 - Unresolved questions:
@@ -103,28 +90,12 @@ Use this template for each entry:
 At minimum, each model entry should record:
 
 - `model_id`
-- model label
-- script where model is estimated
-- model type, such as ordered probit, two-way fixed effects, repeated-event DiD
-- main fit command or model-estimation expression
-- R function or package used
-- dependent variable
-- key independent variables or event indicators
-- controls
-- Mundlak controls
-- fixed effects
-- year indicators
-- standard error type
-- clustering variable
-- standard error implementation function
-- standard error fallback behavior, if any
-- weights, if any
-- sample restrictions
-- missing-data rule
-- event window, if applicable
-- treatment/event definition, if applicable
-- control/comparison group, if applicable
-- downgrade or upgrade definition, if applicable
+- model identity: label and model family
+- estimation source: script, main fit command, model type, and R function/package
+- specification: outcome, key variables or event indicators, controls, Mundlak controls, fixed effects, and year indicators
+- inference: standard error type, clustering variable, implementation function, and fallback behavior, if any
+- sample: weights, restrictions, and missing-data rule
+- event design, if applicable: event window, treatment definition, comparison group, and downgrade/upgrade definition
 - output files
 - source-code evidence
 - unresolved questions
