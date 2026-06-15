@@ -2,7 +2,11 @@
 Data and Models/
 
 # Generated replication outputs
-outputs/
+output/
+outputs/*
+!outputs/figures/
+outputs/figures/*
+!outputs/figures/northeast_annual_override_amounts.png
 
 # Manuscripts, reports, slides, and local documentation
 Paper/
