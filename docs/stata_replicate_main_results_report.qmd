@@ -1,0 +1,141 @@
+---
+title: "Municipal Override Main Results"
+subtitle: "R replication of the Method Results main tables"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+  docx:
+    toc: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+project_root <- normalizePath(
+  if (file.exists(file.path("R", "00_config.R"))) "." else "..",
+  winslash = "/",
+  mustWork = TRUE
+)
+knitr::opts_knit$set(root.dir = project_root)
+```
+
+```{r}
+source(file.path("R", "00_config.R"))
+load_required_packages(c("dplyr", "readr", "modelsummary", "knitr"))
+
+source_project_script <- function(script) {
+  source(script, local = TRUE)
+}
+
+model_path <- file.path(paths$intermediate, "main_mundlak_models.rds")
+validation_path <- file.path(paths$intermediate, "method_results_validation_summary.csv")
+figure_path <- file.path(paths$figures, "figure_1_predicted_probabilities.png")
+
+if (!file.exists(model_path) || !file.exists(validation_path)) {
+  source_project_script(file.path("R", "08_validate_against_method_results.R"))
+}
+
+if (!file.exists(figure_path)) {
+  source_project_script(file.path("R", "06_figure_margins.R"))
+}
+
+main_mundlak_fits <- readRDS(model_path)
+validation_summary <- readr::read_csv(
+  validation_path,
+  show_col_types = FALSE
+)
+
+render_model_table <- function(fits, title) {
+  models <- lapply(fits, `[[`, "model")
+  vcovs <- lapply(fits, `[[`, "vcov")
+  names(models) <- names(fits)
+  names(vcovs) <- names(fits)
+
+  modelsummary::modelsummary(
+    models,
+    vcov = vcovs,
+    stars = TRUE,
+    title = title,
+    coef_rename = variable_labels,
+    coef_omit = "factor\\(year\\)|con$|\\|",
+    gof_omit = "AIC|BIC|Log.Lik.|RMSE",
+    output = "markdown"
+  )
+}
+```
+
+## Validation Against Method Results
+
+The report uses the fitted model objects produced by the numbered R workflow. The validation script compares selected main-table coefficients and model sample sizes against `Data and Models/6.22/Method_Results.docx`.
+
+```{r}
+knitr::kable(validation_summary, digits = 3)
+```
+
+## Table 1
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_1,
+  "Table 1. Effects of Overrides on Credit Ratings"
+)
+```
+
+## Table 2
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_2,
+  "Table 2. Effects of Overrides on Credit Ratings Under Fiscal Stress"
+)
+```
+
+## Table 3
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_3,
+  "Table 3. Effects of Override Attempts on Override Success"
+)
+```
+
+## Table 4
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_4,
+  "Table 4. Effects of Overrides on Turnout Rate"
+)
+```
+
+## Table 5
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_5,
+  "Table 5. Effects of Override Frequency on Credit Ratings"
+)
+```
+
+## Table 6
+
+```{r}
+#| results: asis
+render_model_table(
+  main_mundlak_fits$table_6,
+  "Table 6. Effects of Override Frequency in the Past Few Years on Credit Ratings"
+)
+```
+
+## Figure 1
+
+![](../outputs/figures/figure_1_predicted_probabilities.png){fig-alt="Predicted Moody's rating probabilities by override and fiscal stress" width="100%"}

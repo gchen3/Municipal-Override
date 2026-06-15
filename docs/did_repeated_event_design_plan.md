@@ -274,7 +274,7 @@ Save:
 
 Optional report:
 
-- `doc/did_repeated_event_report.qmd`
+- `docs/did_repeated_event_report.qmd`
 - `outputs/report/did_repeated_event_report.html`
 - `outputs/report/did_repeated_event_report.docx`
 
