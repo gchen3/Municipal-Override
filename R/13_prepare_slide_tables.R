@@ -3,6 +3,10 @@ load_required_packages(c("dplyr", "tidyr", "purrr", "readr"))
 make_output_dirs()
 source(file.path("R", "active_helpers.R"))
 
+slide_table_file <- function(file_name) {
+  file.path("slides", file_name)
+}
+
 active_models <- readRDS(file.path(paths$intermediate, "active_operating_mundlak_models.rds"))
 did_main <- readr::read_csv(
   file.path(paths$tables, "active_operating_repeated_event_binary_did_main.csv"),
@@ -24,7 +28,7 @@ moodys_rows <- moodys_specs |>
   tidyr::unnest(stats)
 
 write_tex(
-  "northeast_moodys_main.tex",
+  slide_table_file("northeast_moodys_main.tex"),
   c(
     "\\begin{center}",
     "\\scriptsize",
@@ -64,7 +68,7 @@ moodys_frequency_rows <- moodys_frequency_specs |>
   tidyr::unnest(stats)
 
 write_tex(
-  "northeast_moodys_frequency.tex",
+  slide_table_file("northeast_moodys_frequency.tex"),
   c(
     "\\begin{center}",
     "\\scriptsize",
@@ -111,7 +115,7 @@ vote_rows <- vote_specs |>
 
 write_vote_share_table <- function(rows, filename, note) {
   write_tex(
-    filename,
+    slide_table_file(filename),
     c(
       "\\begin{center}",
       "\\scriptsize",
@@ -172,7 +176,7 @@ counts_wide <- dplyr::bind_rows(overall_counts, control_counts) |>
   dplyr::arrange(match(event, unname(event_table_labels)))
 
 write_tex(
-  "northeast_repeated_event_counts.tex",
+  slide_table_file("northeast_repeated_event_counts.tex"),
   c(
     "\\begin{center}",
     "\\scriptsize",
@@ -218,7 +222,7 @@ did_rows <- did_main |>
   dplyr::arrange(match(event, unname(event_table_labels)), match(outcome_label, unname(did_outcome_labels)))
 
 write_tex(
-  "northeast_repeated_event_did_main.tex",
+  slide_table_file("northeast_repeated_event_did_main.tex"),
   c(
     "\\begin{center}",
     "\\tiny",
@@ -253,7 +257,7 @@ write_did_outcome_table <- function(outcome_label, file_name) {
     dplyr::filter(.data$outcome_label == .env$outcome_label)
 
   write_tex(
-    file_name,
+    slide_table_file(file_name),
     c(
       "\\begin{center}",
       "\\scriptsize",

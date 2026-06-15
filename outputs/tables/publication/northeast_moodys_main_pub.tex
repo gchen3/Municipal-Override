@@ -1,0 +1,43 @@
+\begin{table}[!htbp]
+\centering
+\caption{Operating Overrides and Moody's Ratings}
+\label{tab:northeast_moodys_main}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & \multicolumn{3}{c}{Moody's credit rating} \\
+\cmidrule(lr){2-4}
+ & (1) & (2) & (3) \\
+\midrule
+Override attempt & 0.130*** &  &  \\
+ & (0.048) &  &  \\
+Successful override &  & 0.187*** &  \\
+ &  & (0.063) &  \\
+Failed override &  &  & 0.026 \\
+ &  &  & (0.055) \\
+Population size (log) & -1.447*** & -1.550*** & -1.475*** \\
+ & (0.140) & (0.138) & (0.139) \\
+Outstanding debt level (\%) & -0.003*** & -0.003** & -0.003** \\
+ & (0.001) & (0.001) & (0.001) \\
+Unemployment rate (\%) & 0.125*** & 0.126*** & 0.127*** \\
+ & (0.038) & (0.039) & (0.038) \\
+Revenue stability (\%) & -0.009 & -0.010 & -0.008 \\
+ & (0.008) & (0.008) & (0.008) \\
+Government revenue (per capita) & -0.294 & -0.293 & -0.323* \\
+ & (0.179) & (0.178) & (0.182) \\
+Excess property tax capacity & -0.867 & -0.875 & -0.840 \\
+ & (0.579) & (0.579) & (0.585) \\
+Fiscal reserve (\%) & 0.050*** & 0.050*** & 0.049*** \\
+ & (0.009) & (0.009) & (0.009) \\
+Budget balance (\%) & -0.010* & -0.010* & -0.010* \\
+ & (0.005) & (0.005) & (0.005) \\
+\midrule
+Observations & 3,550 & 3,550 & 3,550 \\
+Municipalities & 265 & 265 & 265 \\
+Mundlak means & Yes & Yes & Yes \\
+Year indicators & Yes & Yes & Yes \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} The dependent variable is Moody's ordered municipal credit rating. Models are ordered probit regressions. Ordered-probit cutpoints are omitted. All columns include the listed controls. Standard errors in parentheses are clustered by municipality. Moody's complete-case years are 2003--2015, 2017, and 2019--2021. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}

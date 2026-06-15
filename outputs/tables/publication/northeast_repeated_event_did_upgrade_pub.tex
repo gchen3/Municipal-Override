@@ -1,0 +1,31 @@
+\begin{table}[!htbp]
+\centering
+\caption{Repeated-Event DiD Estimates for Rating Upgrades}
+\label{tab:northeast_did_upgrade}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & \multicolumn{3}{c}{Rating upgrade} \\
+\cmidrule(lr){2-4}
+ & Attempt & Success & Failure \\
+\midrule
+$h=-2$ & -0.017 & -0.016 & -0.009 \\
+ & (0.011) & (0.010) & (0.013) \\
+$h=0$ & -0.029** & -0.029** & -0.012 \\
+ & (0.014) & (0.015) & (0.020) \\
+$h=1$ & -0.027 & -0.036 & -0.015 \\
+ & (0.019) & (0.022) & (0.029) \\
+$h=2$ & -0.013 & -0.031 & -0.030 \\
+ & (0.026) & (0.026) & (0.037) \\
+\midrule
+Observations & 112,960 & 118,666 & 106,167 \\
+Municipalities & 246 & 257 & 259 \\
+Stacks & 179 & 157 & 131 \\
+Stack-by-municipality fixed effects & Yes & Yes & Yes \\
+Stack-by-year fixed effects & Yes & Yes & Yes \\
+Covariates & No & No & No \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} Models are repeated-event linear probability models using the window-clean preferred specification. The omitted reference period is $h=-1$. The event window is $h=-2$ to $h=2$. The comparison pool is window-clean controls. Models include stack-by-municipality and stack-by-year fixed effects, with no additional covariates. Standard errors in parentheses are clustered by municipality. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}

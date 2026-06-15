@@ -79,13 +79,13 @@ The core slide outputs are:
 
 ```text
 outputs/figures/northeast_annual_override_amounts.png
-outputs/tables/northeast_moodys_main.tex
-outputs/tables/northeast_moodys_frequency.tex
-outputs/tables/northeast_vote_share_annual.tex
-outputs/tables/northeast_vote_share_cumulative.tex
-outputs/tables/northeast_repeated_event_counts.tex
-outputs/tables/northeast_repeated_event_did_downgrade.tex
-outputs/tables/northeast_repeated_event_did_upgrade.tex
+outputs/tables/slides/northeast_moodys_main.tex
+outputs/tables/slides/northeast_moodys_frequency.tex
+outputs/tables/slides/northeast_vote_share_annual.tex
+outputs/tables/slides/northeast_vote_share_cumulative.tex
+outputs/tables/slides/northeast_repeated_event_counts.tex
+outputs/tables/slides/northeast_repeated_event_did_downgrade.tex
+outputs/tables/slides/northeast_repeated_event_did_upgrade.tex
 outputs/figures/northeast_event_study_operating_attempt.png
 outputs/figures/northeast_event_study_operating_success.png
 outputs/figures/northeast_event_study_operating_failure.png

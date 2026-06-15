@@ -114,7 +114,9 @@ fmt_int <- function(x) {
 }
 
 write_tex <- function(file_name, lines) {
-  writeLines(lines, file.path(paths$tables, file_name), useBytes = TRUE)
+  output_path <- file.path(paths$tables, file_name)
+  dir.create(dirname(output_path), recursive = TRUE, showWarnings = FALSE)
+  writeLines(lines, output_path, useBytes = TRUE)
 }
 
 cell_with_se <- function(estimate, std_error, p_value) {

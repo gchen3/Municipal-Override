@@ -1,12 +1,19 @@
 # Raw data, model inputs, and externally supplied results
 Data and Models/
 
-# Generated replication outputs
+# Generated outputs; keep only milestone artifacts under outputs/
 output/
 outputs/*
 !outputs/figures/
 outputs/figures/*
-!outputs/figures/northeast_annual_override_amounts.png
+!outputs/slides/
+outputs/slides/*
+!outputs/tables/
+outputs/tables/*
+!outputs/tables/publication/
+!outputs/tables/publication/*.tex
+!outputs/tables/slides/
+!outputs/tables/slides/*.tex
 
 # Manuscripts, reports, slides, and local documentation
 Paper/
@@ -47,8 +54,6 @@ Conference/
 *.pptx
 
 # Generated active-workflow preview tables/reports
-outputs/tables/active_operating_*.html
-outputs/report/northeast_event_study_figures.html
 docs/*.html
 docs/*.pdf
 docs/*.docx
@@ -62,7 +67,6 @@ slides/*.vrb
 
 # Image and figure outputs
 *.png
-!outputs/figures/northeast_annual_override_amounts.png
 *.jpg
 *.jpeg
 *.gif
@@ -75,5 +79,9 @@ slides/*.vrb
 Thumbs.db
 
 # Exception PDFs to keep under version control
+!outputs/figures/northeast_annual_override_amounts.png
+!outputs/figures/northeast_event_study_operating_attempt.png
+!outputs/figures/northeast_event_study_operating_failure.png
+!outputs/figures/northeast_event_study_operating_success.png
 !outputs/slides/NorthEast_workshop_municipal_overrides.pdf
 !outputs/tables/northeast_publication_tables.pdf

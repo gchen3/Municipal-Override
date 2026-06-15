@@ -173,7 +173,7 @@ $$
 -   Failed overrides have a small, insignificant association in the active ordered probit models.
 -   These estimates use controls, Mundlak means, year indicators, and municipality-clustered standard errors.
 
-\input{../outputs/tables/northeast_moodys_main.tex}
+\input{../outputs/tables/slides/northeast_moodys_main.tex}
 
 ## Override Frequency and Moody's Ratings
 
@@ -181,7 +181,7 @@ $$
 -   The estimates are small and insignificant, so the models do not provide clear support for H3b.
 -   Estimates use controls, Mundlak means, year indicators, and municipality-clustered standard errors.
 
-\input{../outputs/tables/northeast_moodys_frequency.tex}
+\input{../outputs/tables/slides/northeast_moodys_frequency.tex}
 
 ## Annual Override Frequency and Yes Votes
 
@@ -190,7 +190,7 @@ $$
 -   Annual failed override counts are negatively associated with yes-vote percentages.
 -   Models use municipality and year fixed effects.
 
-\input{../outputs/tables/northeast_vote_share_annual.tex}
+\input{../outputs/tables/slides/northeast_vote_share_annual.tex}
 
 ## Three-Year Override Frequency and Yes Votes
 
@@ -199,7 +199,7 @@ $$
 -   Three-year cumulative failures are negatively associated with yes-vote percentages.
 -   Models use municipality and year fixed effects.
 
-\input{../outputs/tables/northeast_vote_share_cumulative.tex}
+\input{../outputs/tables/slides/northeast_vote_share_cumulative.tex}
 
 ## Repeated-Event Sample Construction
 
@@ -207,7 +207,7 @@ $$
 -   The design compares treated events with window-clean controls.
 -   Event-year estimates compare rating-change outcomes to $h=-1$ within each stack.
 
-\input{../outputs/tables/northeast_repeated_event_counts.tex}
+\input{../outputs/tables/slides/northeast_repeated_event_counts.tex}
 
 ## Repeated-Event DiD: Downgrades
 
@@ -215,7 +215,7 @@ $$
 -   Failed-event downgrade estimates are negative in years $h=1$ and $h=2$.
 -   Estimates are relative to $h=-1$ within each stack.
 
-\input{../outputs/tables/northeast_repeated_event_did_downgrade.tex}
+\input{../outputs/tables/slides/northeast_repeated_event_did_downgrade.tex}
 
 ## Repeated-Event DiD: Upgrades
 
@@ -223,7 +223,7 @@ $$
 -   Event-year estimates for attempts and successes are statistically significant.
 -   Estimates are relative to $h=-1$ within each stack.
 
-\input{../outputs/tables/northeast_repeated_event_did_upgrade.tex}
+\input{../outputs/tables/slides/northeast_repeated_event_did_upgrade.tex}
 
 ## Event Study: Override Attempts
 

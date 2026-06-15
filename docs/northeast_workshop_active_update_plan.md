@@ -88,14 +88,14 @@ Settled scope decision: the updated deck will drop fiscal-stress moderation/H3 m
    - Read active `.rds` model objects and active DiD/sample-count CSVs.
    - Produce compact, publication-quality Beamer-friendly tables, not full HTML tables.
    - Candidate outputs:
-     - `outputs/tables/northeast_moodys_main.tex`
-     - `outputs/tables/northeast_moodys_frequency.tex`
-     - `outputs/tables/northeast_vote_share_annual.tex`
-     - `outputs/tables/northeast_vote_share_cumulative.tex`
-     - `outputs/tables/northeast_repeated_event_counts.tex`
-     - `outputs/tables/northeast_repeated_event_did_main.tex`
-     - `outputs/tables/northeast_repeated_event_did_downgrade.tex`
-     - `outputs/tables/northeast_repeated_event_did_upgrade.tex`
+     - `outputs/tables/slides/northeast_moodys_main.tex`
+     - `outputs/tables/slides/northeast_moodys_frequency.tex`
+     - `outputs/tables/slides/northeast_vote_share_annual.tex`
+     - `outputs/tables/slides/northeast_vote_share_cumulative.tex`
+     - `outputs/tables/slides/northeast_repeated_event_counts.tex`
+     - `outputs/tables/slides/northeast_repeated_event_did_main.tex`
+     - `outputs/tables/slides/northeast_repeated_event_did_downgrade.tex`
+     - `outputs/tables/slides/northeast_repeated_event_did_upgrade.tex`
    - Keep tables narrow: show the main operating terms, standard errors, significance markers, observations, municipalities, and model notes.
    - Apply publication-quality table standards:
      - Use clear model titles and column labels tied to the estimands, not raw object names.

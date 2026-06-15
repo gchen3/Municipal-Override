@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create separate publication-ready regression tables for the Northeast results before using them in a journal manuscript. These tables should be distinct from the existing slide-oriented `northeast_*.tex` files.
+Create separate publication-ready regression tables for the Northeast results before using them in a journal manuscript. These tables should be distinct from the existing slide-oriented `outputs/tables/slides/northeast_*.tex` files.
 
 ## Output Location
 
