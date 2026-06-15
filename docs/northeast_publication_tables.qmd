@@ -1,0 +1,36 @@
+---
+title: "Northeast Publication Tables"
+format:
+  pdf:
+    documentclass: article
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage[margin=1in]{geometry}
+        \usepackage{float}
+        \usepackage{caption}
+execute:
+  enabled: false
+---
+
+\input{../outputs/tables/publication/northeast_moodys_main_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/northeast_moodys_frequency_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/northeast_vote_share_annual_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/northeast_vote_share_cumulative_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/northeast_repeated_event_did_downgrade_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/northeast_repeated_event_did_upgrade_pub.tex}

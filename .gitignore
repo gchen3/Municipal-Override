@@ -2,6 +2,8 @@
 Data and Models/
 
 # Generated replication outputs
+outputs/frozen_original/
+outputs/reproduced/
 
 
 # Manuscripts, reports, slides, and local documentation
@@ -36,6 +38,7 @@ Conference/
 *.rtf
 *.qmd
 !slides/NorthEast_workshop.qmd
+!docs/*.qmd
 *.rmd
 *.Rmd
 *.ppt
@@ -44,6 +47,12 @@ Conference/
 # Generated active-workflow preview tables/reports
 outputs/tables/active_operating_*.html
 outputs/report/northeast_event_study_figures.html
+docs/*.html
+docs/*.pdf
+docs/*.docx
+docs/outputs/
+transparency/*.html
+transparency/*_files/
 slides/*.aux
 slides/*.log
 slides/*.tex

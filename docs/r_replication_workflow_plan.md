@@ -154,11 +154,11 @@ Validate the R workflow against Stata logic. Reading `.dta` files in R to run th
 - Check key created variables against Stata formulas: override counts, cumulative 3-year measures, fiscal stress terciles, CPI-adjusted variables, and Moody's recode.
 - Confirm output coverage: Figure 1, Tables 1-6, and Appendix Tables A1-A11.
 - Compare model `N`, pseudo-R2/R2, coefficient signs, and stars against `Method_Results.docx`.
-- Replicate Stata behavior first. Document known Stata quirks and suggested fixes in `doc/stata_workflow_issues.md` rather than silently changing the initial R replication.
+- Replicate Stata behavior first. Document known Stata quirks and suggested fixes in `docs/stata_workflow_issues.md` rather than silently changing the initial R replication.
 
 ## Assumptions
 
-The R implementation should replicate the newest Stata workflow first, including questionable Stata behavior where needed for parity. Suggested corrections belong in `doc/stata_workflow_issues.md`.
+The R implementation should replicate the newest Stata workflow first, including questionable Stata behavior where needed for parity. Suggested corrections belong in `docs/stata_workflow_issues.md`.
 
 The target is reproduction of `Method_Results.docx`, so `Tables_mundlak.rtf` logic from the 6.5 script takes priority over older `Tables.rtf` logic.
 

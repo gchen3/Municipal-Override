@@ -1,0 +1,178 @@
+# Northeast Publication-Ready Tables Plan
+
+## Goal
+
+Create separate publication-ready regression tables for the Northeast results before using them in a journal manuscript. These tables should be distinct from the existing slide-oriented `northeast_*.tex` files.
+
+## Output Location
+
+Write new tables to:
+
+`outputs/tables/publication/`
+
+Use publication-specific file names:
+
+| result block | output file |
+| --- | --- |
+| Moody's annual override indicators | `northeast_moodys_main_pub.tex` |
+| Moody's three-year override frequency | `northeast_moodys_frequency_pub.tex` |
+| Annual override frequency and yes votes | `northeast_vote_share_annual_pub.tex` |
+| Three-year override frequency and yes votes | `northeast_vote_share_cumulative_pub.tex` |
+| Repeated-event DiD downgrade models | `northeast_repeated_event_did_downgrade_pub.tex` |
+| Repeated-event DiD upgrade models | `northeast_repeated_event_did_upgrade_pub.tex` |
+| Combined repeated-event DiD models, appendix-style | `northeast_repeated_event_did_main_pub.tex` |
+
+## Table Format
+
+Use full LaTeX `table` environments rather than slide fragments. Each table should include:
+
+- `\caption{}`
+- `\label{}`
+- `\centering`
+- `booktabs` table structure
+- journal-style notes below the tabular body
+
+Keep the existing slide tables unchanged.
+
+## Model Content
+
+### Moody's Ordered Probit Tables
+
+Use the existing Northeast main result models:
+
+- `active_moodys_annual_attempt`
+- `active_moodys_annual_success`
+- `active_moodys_annual_failure`
+- `active_moodys_cumulative_attempt_3yr`
+- `active_moodys_cumulative_success_3yr`
+- `active_moodys_cumulative_failure_3yr`
+
+Publication table requirements:
+
+- Dependent variable: `MOO_ordered`.
+- Estimator: ordered probit.
+- Show the specific override variable labels instead of generic labels.
+- Report coefficients and municipality-clustered standard errors.
+- Report observations.
+- Report municipalities.
+- Report complete-case years.
+- Add rows for controls, Mundlak means, and year indicators.
+- Note that ordered-probit cutpoints are omitted.
+- List control variables in the note:
+  - population size
+  - outstanding debt level
+  - unemployment rate
+  - revenue stability
+  - government revenue per capita
+  - excess property tax capacity
+  - fiscal reserve
+  - budget balance
+
+### Vote-Share Fixed-Effect Tables
+
+Use the existing Northeast main result models:
+
+- `active_vote_share_annual_attempt_count`
+- `active_vote_share_annual_success_count`
+- `active_vote_share_annual_failure_count`
+- `active_vote_share_cumulative_attempt_3yr`
+- `active_vote_share_cumulative_success_3yr`
+- `active_vote_share_cumulative_failure_3yr`
+
+Publication table requirements:
+
+- Dependent variable: `oper_yes_vote_percent`.
+- Estimator: linear fixed-effects model.
+- Show the specific override count or cumulative count variable labels.
+- Report coefficients and municipality-clustered standard errors.
+- Report observations.
+- Report municipalities.
+- Report complete-case years.
+- Add rows for controls, municipality fixed effects, and year fixed effects.
+- List the same control variables in the note.
+
+### Repeated-Event DiD Tables
+
+Use only the preferred Northeast repeated-event specification:
+
+- `window_clean_preferred`
+
+Include only these fitted models:
+
+- `active_did_operating_attempt_rating_downgrade_window_clean_preferred`
+- `active_did_operating_attempt_rating_upgrade_window_clean_preferred`
+- `active_did_operating_success_rating_downgrade_window_clean_preferred`
+- `active_did_operating_success_rating_upgrade_window_clean_preferred`
+- `active_did_operating_failure_rating_downgrade_window_clean_preferred`
+- `active_did_operating_failure_rating_upgrade_window_clean_preferred`
+
+Publication table requirements:
+
+- Dependent variables: `rating_downgrade` and `rating_upgrade`.
+- Estimator: linear probability model.
+- Show event types: attempt, success, failure.
+- Show event-time coefficients for `h = -2`, `h = 0`, `h = 1`, and `h = 2`.
+- State that `h = -1` is the omitted reference period.
+- Report stack-by-municipality fixed effects.
+- Report stack-by-year fixed effects.
+- Report covariates: No.
+- Report control pool: window-clean controls.
+- Report event window: `-2` to `2`.
+- Report standard errors clustered by municipality.
+- Add sample information if available from the repeated-event result object:
+  - observations
+  - municipalities
+  - stacks or clean treated events
+
+Do not include robustness specifications in these publication tables:
+
+- `never_treated_controls`
+- `first_time_events`
+- `narrow_window`
+- `active_controls_preferred`
+
+Mention `active_controls_preferred` only as a robustness specification if needed, not in the main publication tables.
+
+## Implementation
+
+Create a new script:
+
+`R/15_prepare_publication_tables.R`
+
+The script should:
+
+- Source or load the existing workflow objects generated by `R/10` through `R/14`.
+- Reuse existing model fits and result summaries where possible.
+- Create `outputs/tables/publication/` if needed.
+- Write the publication-ready LaTeX tables listed above.
+- Avoid overwriting the existing Northeast slide tables.
+
+Prefer reproducible generation from model objects and existing table-prep logic over manually editing existing `.tex` outputs.
+
+## Registry Update
+
+After the publication tables are generated, update:
+
+`transparency/northeast_results_registry.md`
+
+Add a short `Publication Tables` section mapping each Northeast result block to its publication-ready table file.
+
+## Validation
+
+After implementation:
+
+- Confirm all publication `.tex` files exist.
+- Confirm each table has a caption and label.
+- Confirm each table reports dependent variable, estimator, observations, sample information, and specification rows.
+- Confirm controls are named in notes.
+- Confirm repeated-event DiD tables state the fixed effects, control pool, reference year, event window, and clustering.
+- Confirm no publication table overwrites the slide tables.
+- Render a small Quarto or LaTeX test document to visually inspect the tables.
+
+## Default Decisions
+
+- Use full LaTeX table environments.
+- Put controls in the note, not as individual coefficient rows.
+- Keep downgrade and upgrade repeated-event DiD tables separate, with one optional combined appendix-style table.
+- Generate from workflow/model objects rather than manually expanding existing slide tables.
+- Store outputs under `outputs/tables/publication/`.
