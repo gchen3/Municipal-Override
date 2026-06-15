@@ -31,7 +31,7 @@ The combined **attempt** contrast (any attempt vs. no override) is deliberately 
 
 ### Control group
 
-Controls are municipalities with **no operating override of either type** (no success and no failure) inside the event window. This is stricter than the event-study DiD's window-clean pool, which only excludes same-type events. It is derivable from the existing stacks by keeping control rows with `control_attempts_in_window == 0`.
+Controls are municipalities with **no operating override of either type** (no success and no failure) inside the event window. This is stricter than the event-study DiD's window-clean pool, which only excludes same-type events. It is derivable from the existing stacks by keeping treated rows together with control rows that have `control_attempts_in_window == 0` (treated rows carry `NA` in that column), i.e. filter `treated_event == 1 | control_attempts_in_window == 0`.
 
 ### Treated-event cleanliness
 
@@ -70,7 +70,7 @@ Pool the success and failure stacks and estimate the difference directly:
 cum_outcome ~ treated_event + treated_event:is_success | stack_id   # feols, vcov = ~ code
 ```
 
-The `treated_event:is_success` coefficient is the success-vs-failure differential and is the quantity to compare against the close-election RDD estimate.
+The `treated_event:is_success` coefficient is the success-vs-failure differential and is the quantity to compare against the close-election RDD estimate. The `is_success` main effect is intentionally omitted: each stack is entirely success or entirely failure, so `is_success` is constant within a stack and absorbed by `stack_id`. The `treated_event` main effect is then the failure effect, and `treated_event + treated_event:is_success` is the success effect.
 
 ### Pre-trend and placebo
 
@@ -87,7 +87,7 @@ The `t - 2` baseline removes the `h = -2` pre-trend test available in the event-
 ### Reuse Existing Infrastructure
 
 - Stacks: reuse the saved `active_operating_*_stack_window_clean.rds` from `R/11`; derive the no-override control pool by filtering control rows to `control_attempts_in_window == 0`. Restrict treated events to fully clean windows using the `failures_in_window` / `successes_in_window` columns on the events tibble (the same-type-clean set is the robustness variant).
-- Outcomes: add a cumulative-outcome helper to `R/close_election_helpers.R` (or a small `R/stacked_did_helpers.R`) analogous to `add_close_election_outcomes`, but operating on stack rows grouped by `stack_id` and `code` with a `rel_year == -2` baseline.
+- Outcomes: add a dedicated `R/stacked_did_helpers.R`, kept separate from the close-election helpers. Unlike `add_close_election_outcomes`, which looks ratings up by `code`/`year`, the stacked version reads the ratings already attached to the stack: pivot `MOO_num` over `rel_year` within each `(stack_id, code)`, take the `rel_year == -2` rating as the baseline, and build the cumulative within-0/1/2-year indicators from `rel_year` 0/1/2.
 - Models, formatting, paths: reuse `fit_fe_lm`, `fmt_num`, `stars`, `fmt_int`, `write_tex`, `paths`, and `make_output_dirs`.
 
 ### Stage 1. Build the Cumulative Stacked DiD data
@@ -113,7 +113,8 @@ Create `R/21_cumulative_stacked_did_models.R` (or split build/model if it grows)
 
 ### Stage 4. Triangulation summary
 
-- Assemble a small table placing the success-vs-failure bridge estimate next to the close-election RDD estimate for the same outcomes, so the two designs can be compared directly.
+- Read the close-election RDD estimates from `outputs/tables/active_operating_close_election_rating_models.csv` (regenerate via `R/17` if missing); use the `+/- 5pp` `lpm_controls` `close_success` coefficients.
+- Place the success-vs-failure bridge estimate next to the RDD `close_success` estimate, mapping stacked-DiD `within_1` to RDD `within_1yr` and `within_2` to RDD `within_2yr`. The stacked-DiD `within_0` outcome has no RDD analog and is reported without a counterpart.
 - Save to `outputs/tables/active_operating_cumulative_stacked_did_vs_rdd.csv`.
 
 ### Stage 5. Review first; defer publication and incorporation
