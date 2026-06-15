@@ -4,7 +4,7 @@ This project analyzes Massachusetts municipal override elections and their relat
 
 ## Current Active Workflow
 
-The current active analysis focuses on operating overrides. It estimates ordered-response Moody's rating models, voter-support models, and repeated-event DiD robustness checks for binary Moody's rating changes. Run the active workflow with:
+The current active analysis focuses on operating overrides. It estimates ordered-response Moody's rating models, voter-support models, repeated-event DiD robustness checks for binary Moody's rating changes, and publication-table drafts. Run the active workflow with:
 
 ```r
 source(file.path("R", "run_active_workflow.R"))
@@ -26,6 +26,8 @@ source(file.path("R", "run_active_workflow.R"))
    - Converts active model results into compact slide-ready LaTeX tables.
 5. `R/14_prepare_slide_figures.R`
    - Writes the annual override-amount figure, event-study figures, and event-study preview report.
+6. `R/15_prepare_publication_tables.R`
+   - Writes publication-oriented LaTeX table drafts under `outputs/tables/publication/`.
 
 `R/active_helpers.R` supplies shared active workflow definitions, labels, formatting helpers, and repeated-event model helpers.
 
@@ -42,6 +44,8 @@ The Northeast workshop slide deck is `slides/NorthEast_workshop.qmd`. It uses th
 - `outputs/figures/northeast_event_study_operating_attempt.png`
 - `outputs/figures/northeast_event_study_operating_success.png`
 - `outputs/figures/northeast_event_study_operating_failure.png`
+
+Publication-table drafts are generated from the same Northeast workflow and written to `outputs/tables/publication/`. That folder is generated output and is ignored by Git.
 
 ## Frozen Stata-Replication Track
 
@@ -78,7 +82,25 @@ The active repeated-event design estimates binary rating-change outcomes:
 - downgrade relative to the municipality's `h = -1` Moody's rating,
 - upgrade relative to the municipality's `h = -1` Moody's rating.
 
-The preferred repeated-event comparison pool uses window-clean controls with no same-type operating override event inside the local event window. Robustness variants use never-treated controls, prior-history controls, first-time events, and a narrower event window.
+The preferred repeated-event comparison pool uses window-clean controls with no same-type operating override event inside the local event window. Robustness variants use never-treated controls, the preferred specification with active controls added, first-time events, and a narrower event window.
+
+## Documentation And Transparency
+
+Project documentation lives under `docs/`. The main planning and audit documents are:
+
+- `docs/r_replication_workflow_plan.md`
+- `docs/northeast_workshop_active_update_plan.md`
+- `docs/northeast_publication_tables_plan.md`
+- `docs/northeast_close_election_causal_analysis_plan.md`
+- `docs/stata_workflow_issues.md`
+
+The Northeast transparency record lives under `transparency/`:
+
+- `transparency/northeast_results_registry.md`
+- `transparency/northeast_variable_dictionary.md`
+- `transparency/freeze_northeast_results.R`
+- `transparency/reproduce_northeast_results.R`
+- `transparency/northeast_freeze_and_reproduce.md`
 
 ## Reproducibility Notes
 
