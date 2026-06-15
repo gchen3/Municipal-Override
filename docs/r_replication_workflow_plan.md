@@ -1,5 +1,7 @@
 # R Replication Plan for the Municipal Override Stata Workflow
 
+> **Status: implemented.** The Stata-replication track shipped as `R/00`–`R/09`, matching the script names below. See `README.md` for as-built details.
+
 ## Big Picture Review
 
 The newest substantive Stata workflow is `Data and Models/6.5/5.4 most latest [confirmed by 4.1.2026].do`. It was last modified June 6, 2025, and is the only `.do` file that starts from raw override files, builds the regression dataset, runs descriptives, estimates the main and appendix models, and exports tables.
@@ -101,29 +103,7 @@ Build a clean R pipeline with `targets` or a simple numbered-script workflow. Us
    - Run the original Stata-replication workflow from `R/01` through `R/08`.
    - This track should pass validation against `Method_Results.docx`.
 
-10. `R/10_run_did_workflow.R`
-   - Run the repeated-event DiD extension workflow from `R/13` through `R/16`.
-
-11. `R/11_run_all_active_workflow.R`
-   - Run both active tracks in order.
-
-12. `R/12_did_rating_change_helpers.R`
-   - Define shared downgrade, upgrade, and any-change helpers for repeated-event scripts.
-
-13. `R/13_build_did_repeated_event_data.R`
-   - Build stacked repeated-event samples for successful operating override events.
-   - Use clean event windows that reduce overlap from repeated operating override events.
-
-14. `R/14_did_repeated_event_models.R`
-   - Estimate repeated-event robustness models.
-   - Treat binary downgrade, upgrade, and any rating change outcomes as the main repeated-event robustness checks.
-   - Keep numeric Moody's rating models only as secondary rating-notch sensitivity checks.
-
-15. `R/15_did_repeated_event_attempt_failure_models.R`
-   - Estimate attempt and failure repeated-event specifications as exploratory or appendix robustness checks.
-
-16. `R/16_did_repeated_event_all_override_models.R`
-   - Estimate all-override repeated-event specifications as exploratory or appendix robustness checks.
+> The repeated-event DiD extension is documented separately in `docs/did_repeated_event_design_plan.md` and is not part of this Stata-replication plan. (Earlier drafts listed DiD scripts as items 10–16 here; that content has moved to the dedicated DiD plan to avoid duplication.)
 
 ## Modeling Decisions
 

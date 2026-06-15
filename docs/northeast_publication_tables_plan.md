@@ -1,5 +1,7 @@
 # Northeast Publication-Ready Tables Plan
 
+> **Status: implemented** as `R/15_prepare_publication_tables.R` (matches the script name below). See `README.md` for as-built details.
+
 ## Goal
 
 Create separate publication-ready regression tables for the Northeast results before using them in a journal manuscript. These tables should be distinct from the existing slide-oriented `outputs/tables/slides/northeast_*.tex` files.

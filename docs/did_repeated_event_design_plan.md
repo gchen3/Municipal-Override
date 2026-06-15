@@ -1,5 +1,7 @@
 # Repeated-Event DID Design Plan for Operating Override Passage
 
+> **Status: implemented.** Built as `R/11_build_operating_repeated_event_data.R` and `R/12_operating_repeated_event_binary_models.R` (not the `R/13`/`R/14` names used below; helpers live in `R/active_helpers.R`). See `README.md` for as-built script and output names.
+
 ## Purpose
 
 This plan develops a repeated-event difference-in-differences design for estimating whether successful operating override events are followed by changes in Moody's municipal credit ratings.
