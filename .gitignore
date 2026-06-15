@@ -2,10 +2,7 @@
 Data and Models/
 
 # Generated replication outputs
-outputs/frozen_original/
-outputs/reproduced/
-outputs/tables/publication/
-
+outputs/
 
 # Manuscripts, reports, slides, and local documentation
 Paper/
