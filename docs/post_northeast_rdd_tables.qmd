@@ -1,0 +1,28 @@
+---
+title: "Close-Election Rating-Change Tables"
+format:
+  pdf:
+    documentclass: article
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage[margin=1in]{geometry}
+        \usepackage{float}
+        \usepackage{caption}
+execute:
+  enabled: false
+---
+
+\input{../outputs/tables/publication/post_northeast_rdd_main_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_rdd_robustness_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_rdd_event_study_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_rdd_balance_pub.tex}

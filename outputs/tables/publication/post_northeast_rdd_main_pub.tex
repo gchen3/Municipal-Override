@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\caption{Close-Election Effects on Near-Term Moody's Rating Changes}
+\label{tab:post_northeast_rdd_main}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Rating downgrade} & \multicolumn{2}{c}{Rating upgrade} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Within 1 yr & Within 2 yr & Within 1 yr & Within 2 yr \\
+\midrule
+Close success & -0.019 & -0.016 & 0.044 & 0.043 \\
+ & (0.049) & (0.049) & (0.038) & (0.045) \\
+\midrule
+Controls & Yes & Yes & Yes & Yes \\
+Model-year fixed effects & Yes & Yes & Yes & Yes \\
+Observations & 131 & 136 & 131 & 136 \\
+Municipalities & 94 & 94 & 94 & 94 \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} The sample is operating override municipality-years within a $\pm 5$ percentage-point yes-vote margin of the 50\% passage threshold, collapsed to one observation per municipality-year (single close elections and same-direction multiples; mixed win-and-loss years dropped). \emph{Close success} equals one for a barely-passed override and zero for a barely-failed override; there is no no-election control group. Outcomes are indicators for any Moody's rating change within one or two years relative to a pre-vote baseline rating two years before the model year. Models are linear probability models with model-year fixed effects; coefficients are changes in probability. All columns include the listed controls measured at the election fiscal year: Population size (log); Outstanding debt level (\%); Unemployment rate (\%); Revenue stability (\%); Government revenue (per capita); Excess property tax capacity; Fiscal reserve (\%); Budget balance (\%). Standard errors in parentheses are clustered by municipality. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}

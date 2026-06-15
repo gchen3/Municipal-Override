@@ -1,0 +1,23 @@
+\begin{table}[!htbp]
+\centering
+\caption{Close-Election Covariate Balance and Placebo Checks}
+\label{tab:post_northeast_rdd_balance}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Variable & Close failure & Close success & Difference & $p$-value \\
+\midrule
+Baseline Moody's rating & 6.557 & 6.533 & -0.025 & 0.929 \\
+Population size (log) & 3.873 & 3.894 & 0.021 & 0.701 \\
+Outstanding debt level (\%) & 55.195 & 57.883 & 2.688 & 0.609 \\
+Unemployment rate (\%) & 5.817 & 5.079 & -0.737 & 0.048 \\
+Revenue stability (\%) & 83.938 & 85.762 & 1.824 & 0.142 \\
+Government revenue (per capita) & 2.549 & 2.726 & 0.177 & 0.310 \\
+Excess property tax capacity & 0.009 & 0.019 & 0.011 & 0.009 \\
+Fiscal reserve (\%) & 8.272 & 8.405 & 0.133 & 0.875 \\
+Budget balance (\%) & 1.926 & 3.209 & 1.283 & 0.106 \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} Group means at the $\pm 5$ percentage-point bandwidth for close successes versus close failures, with the difference and a two-sample t-test p-value. Controls are measured at the election fiscal year. Pre-election placebo (rating change in the two years before the model year, regressed on close success): downgrade -0.043 (p $=$ 0.191), upgrade 0.022 (p $=$ 0.281). The baseline rating and most controls are balanced; unemployment and excess tax capacity differ across groups.\end{minipage}
+\end{table}

@@ -1,0 +1,24 @@
+\begin{table}[!htbp]
+\centering
+\caption{Close-Election Rating-Change Models: Robustness Across Estimators}
+\label{tab:post_northeast_rdd_robustness}
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Rating downgrade} & \multicolumn{2}{c}{Rating upgrade} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Within 1 yr & Within 2 yr & Within 1 yr & Within 2 yr \\
+\midrule
+LPM, no controls & -0.028 & -0.026 & 0.027 & 0.028 \\
+ & (0.050) & (0.050) & (0.036) & (0.046) \\
+LPM, with controls & -0.019 & -0.016 & 0.044 & 0.043 \\
+ & (0.049) & (0.049) & (0.038) & (0.045) \\
+LPM, local-linear margin & 0.048 & 0.076 & -0.007 & -0.064 \\
+ & (0.101) & (0.120) & (0.061) & (0.085) \\
+\midrule
+Probit, average marginal effect & -0.019 & -0.021 & 0.095 & 0.030 \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} Each cell is the \emph{close success} effect on the row outcome at the $\pm 5$ percentage-point bandwidth. Linear probability rows report the coefficient with the municipality-clustered standard error in parentheses. The local-linear row adds the signed vote margin and its interaction with close success, so the reported effect is at the threshold. The probit row reports the average marginal effect, estimated without year fixed effects to avoid separation on rare outcomes; its significance markers come from the municipality-clustered latent coefficient. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}
