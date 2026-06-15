@@ -11,12 +11,6 @@ operating_repeated_event_data <- readRDS(
   file.path(paths$intermediate, "active_operating_repeated_event_data.rds")
 )
 
-history_covariates <- c(
-  "prior_focal_event_count", "prior_oper_attempt_count",
-  "prior_oper_success_count", "prior_oper_failure_count",
-  "years_since_last_focal_event_filled", "post_prior_focal_event"
-)
-
 fit_event_binary_models <- function(event_data, event_type) {
   first_time_stacks <- event_data$events |>
     dplyr::filter(prior_focal_event_count == 0) |>
@@ -36,13 +30,12 @@ fit_event_binary_models <- function(event_data, event_type) {
       control_pool = "never_treated",
       formula = \(outcome) did_event_formula(outcome)
     ),
-    history_controls = list(
+    active_controls_preferred = list(
       data = stack_window_clean,
       control_pool = "window_clean",
       formula = \(outcome) did_event_formula(
         outcome,
-        fixed_effects = "code + stack_id^year",
-        covariates = history_covariates
+        covariates = active_controls
       )
     ),
     first_time_events = list(
@@ -155,7 +148,7 @@ saveRDS(
   list(
     results = binary_did_results,
     outcomes = did_binary_outcomes,
-    history_covariates = history_covariates,
+    active_control_covariates = active_controls,
     model_failures = binary_did_results |>
       dplyr::filter(model_failed) |>
       dplyr::distinct(event_type, control_pool, outcome, model, error_message)
