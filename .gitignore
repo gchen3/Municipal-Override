@@ -73,3 +73,7 @@ slides/*.vrb
 # OS/editor noise
 .DS_Store
 Thumbs.db
+
+# Exception PDFs to keep under version control
+!outputs/slides/NorthEast_workshop_municipal_overrides.pdf
+!outputs/tables/northeast_publication_tables.pdf
