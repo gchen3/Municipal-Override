@@ -121,3 +121,34 @@ saveRDS(
   model_results,
   file.path(paths$intermediate, "active_operating_close_election_rating_models.rds")
 )
+
+# Control coefficients from the main specification (working-band LPM with
+# controls), for the publication main table.
+extract_controls <- function(model, vcov_matrix) {
+  coefs <- stats::coef(model)
+  ses <- sqrt(diag(vcov_matrix))
+  terms <- intersect(active_controls, names(coefs))
+  tibble::tibble(
+    term = terms,
+    estimate = unname(coefs[terms]),
+    std_error = unname(ses[terms]),
+    p_value = 2 * stats::pnorm(abs(unname(coefs[terms]) / unname(ses[terms])), lower.tail = FALSE)
+  )
+}
+
+control_coefficients <- analysis_data |>
+  dplyr::filter(band == close_election_working_band) |>
+  (\(data_band) purrr::map_dfr(close_election_outcomes, function(outcome) {
+    fit <- fit_fe_lm(lpm_specs$lpm_controls(outcome), data_band)
+    extract_controls(fit$model, fit$vcov) |>
+      dplyr::mutate(outcome = outcome, .before = 1)
+  }))() |>
+  dplyr::mutate(
+    dplyr::across(c(estimate, std_error), ~ round(.x, 4)),
+    p_value = signif(p_value, 3)
+  )
+
+readr::write_csv(
+  control_coefficients,
+  file.path(paths$tables, "active_operating_close_election_control_coefs.csv")
+)

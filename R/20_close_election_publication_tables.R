@@ -7,7 +7,8 @@ source(file.path("R", "close_election_helpers.R"))
 # Post-Northeast RDD publication tables for the close-election follow-up.
 # Mirrors the LaTeX style of R/15_prepare_publication_tables.R and is consumed
 # by docs/post_northeast_rdd_tables.qmd. Reports the +/- 5pp working bandwidth.
-if (!file.exists(file.path(paths$tables, "active_operating_close_election_rating_models.csv"))) {
+if (!file.exists(file.path(paths$tables, "active_operating_close_election_rating_models.csv")) ||
+    !file.exists(file.path(paths$tables, "active_operating_close_election_control_coefs.csv"))) {
   source(file.path("R", "17_close_election_rating_models.R"))
 }
 if (!file.exists(file.path(paths$tables, "active_operating_close_election_balance.csv"))) {
@@ -81,6 +82,24 @@ spec_cells <- function(spec_key) {
   )
 }
 
+# Control coefficients from the main-spec models (working-band LPM with controls).
+control_coefs <- readr::read_csv(
+  file.path(paths$tables, "active_operating_close_election_control_coefs.csv"),
+  show_col_types = FALSE
+)
+
+control_rows <- function(term) {
+  rows <- control_coefs |> dplyr::filter(term == .env$term)
+  rows <- rows[match(outcome_order, rows$outcome), ]
+  c(
+    paste0(
+      escape_latex_text(unname(active_variable_labels[[term]])), " & ",
+      paste(paste0(fmt_num(rows$estimate), stars(rows$p_value)), collapse = " & "), " \\\\"
+    ),
+    paste0(" & ", paste(paste0("(", fmt_num(rows$std_error), ")"), collapse = " & "), " \\\\")
+  )
+}
+
 outcome_header <- c(
   " & \\multicolumn{2}{c}{Rating downgrade} & \\multicolumn{2}{c}{Rating upgrade} \\\\",
   "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
@@ -100,7 +119,9 @@ main_body <- c(
   paste0("Close success & ", paste(primary$estimate, collapse = " & "), " \\\\"),
   paste0(" & ", paste(primary$std_error, collapse = " & "), " \\\\"),
   "\\midrule",
-  paste0("Controls & ", paste(rep("Yes", 4), collapse = " & "), " \\\\"),
+  "\\multicolumn{5}{l}{Controls} \\\\",
+  unlist(lapply(active_controls, control_rows)),
+  "\\midrule",
   paste0("Model-year fixed effects & ", paste(rep("Yes", 4), collapse = " & "), " \\\\"),
   paste0("Observations & ", paste(fmt_int(primary$nobs), collapse = " & "), " \\\\"),
   paste0("Municipalities & ", paste(fmt_int(primary$n_clusters), collapse = " & "), " \\\\")
