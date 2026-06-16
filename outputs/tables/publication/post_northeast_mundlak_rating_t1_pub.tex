@@ -1,0 +1,44 @@
+\begin{table}[!htbp]
+\centering
+\caption{Operating Overrides and the Moody's Rating One Year Later}
+\label{tab:post_northeast_mundlak_rating_t1}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & \multicolumn{3}{c}{Moody's credit rating} \\
+\cmidrule(lr){2-4}
+ & (1) & (2) & (3) \\
+\midrule
+Any override & 0.087* &  &  \\
+ & (0.051) &  &  \\
+Successful override &  & 0.137* &  \\
+ &  & (0.070) &  \\
+Failed override &  &  & 0.007 \\
+ &  &  & (0.052) \\
+\midrule
+Population size (log) & -0.223 & -0.347** & -0.221 \\
+ & (0.138) & (0.136) & (0.137) \\
+Outstanding debt level (\%) & -0.003*** & -0.003*** & -0.003** \\
+ & (0.001) & (0.001) & (0.001) \\
+Unemployment rate (\%) & 0.151*** & 0.151*** & 0.151*** \\
+ & (0.037) & (0.037) & (0.037) \\
+Revenue stability (\%) & -0.015* & -0.016** & -0.014* \\
+ & (0.008) & (0.008) & (0.008) \\
+Government revenue (per capita) & -0.396** & -0.395** & -0.415** \\
+ & (0.180) & (0.180) & (0.182) \\
+Excess property tax capacity & -0.589 & -0.602 & -0.551 \\
+ & (0.642) & (0.641) & (0.647) \\
+Fiscal reserve (\%) & 0.058*** & 0.058*** & 0.057*** \\
+ & (0.010) & (0.009) & (0.010) \\
+Budget balance (\%) & -0.005 & -0.004 & -0.004 \\
+ & (0.006) & (0.006) & (0.006) \\
+\midrule
+Mundlak means & Yes & Yes & Yes \\
+Year indicators & Yes & Yes & Yes \\
+Observations & 3,293 & 3,293 & 3,293 \\
+Municipalities & 265 & 265 & 265 \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} The dependent variable is the Moody's rating one year after the override year ($t+1$), so the association is not confined to the override year. Each column is a separate full-Mundlak ordered-probit regression on one override definition, with the fiscal controls (Population size (log); Outstanding debt level (\%); Unemployment rate (\%); Revenue stability (\%); Government revenue (per capita); Excess property tax capacity; Fiscal reserve (\%); Budget balance (\%)), Mundlak municipality means of the override term and controls, and year indicators; ordered-probit cutpoints are omitted and a higher rating is better. The override coefficient appears in its own column. Control coefficients are model adjustment terms and are not to be interpreted causally -- for example the unemployment coefficient turns positive only after conditioning on the revenue controls and year effects, whereas its raw correlation with the rating is negative. Any override association is cross-sectional, not causal: the stacked DiD (override vs.\ no override) and the close-election RDD find no effect of overrides on near-term rating changes. Standard errors in parentheses are clustered by municipality. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}

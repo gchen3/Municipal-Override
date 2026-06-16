@@ -1,0 +1,20 @@
+---
+title: "Mundlak Rating-Model Tables"
+format:
+  pdf:
+    documentclass: article
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage[margin=1in]{geometry}
+        \usepackage{float}
+        \usepackage{caption}
+execute:
+  enabled: false
+---
+
+\input{../outputs/tables/publication/post_northeast_mundlak_rating_t_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_mundlak_rating_t1_pub.tex}
