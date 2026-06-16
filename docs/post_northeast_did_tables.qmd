@@ -1,0 +1,24 @@
+---
+title: "Cumulative Stacked DiD Rating-Change Tables"
+format:
+  pdf:
+    documentclass: article
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage[margin=1in]{geometry}
+        \usepackage{float}
+        \usepackage{caption}
+execute:
+  enabled: false
+---
+
+\input{../outputs/tables/publication/post_northeast_did_downgrade_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_did_upgrade_pub.tex}
+
+\clearpage
+
+\input{../outputs/tables/publication/post_northeast_did_balance_pub.tex}

@@ -1,0 +1,47 @@
+\begin{table}[!htbp]
+\centering
+\caption{Operating Overrides and Near-Term Moody's Rating Downgrades}
+\label{tab:post_northeast_did_downgrade}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & Success vs. & Failure vs. & Any override \\
+ & no override & no override & vs.\ no override \\
+\midrule
+\multicolumn{4}{l}{\textit{Override effect (treated vs.\ no override)}} \\
+\quad Pre-period (placebo) & -0.011 & -0.028*** & -0.018 \\
+ & (0.018) & (0.006) & (0.011) \\
+\quad Within 0 yr & 0.019 & -0.042*** & -0.005 \\
+ & (0.033) & (0.012) & (0.022) \\
+\quad Within 1 yr & 0.007 & -0.037 & -0.011 \\
+ & (0.033) & (0.028) & (0.024) \\
+\quad Within 2 yr & -0.007 & -0.052* & -0.025 \\
+ & (0.033) & (0.029) & (0.025) \\
+\midrule
+\multicolumn{4}{l}{\textit{Controls (within-2 yr model)}} \\
+\quad Population size (log) & 0.019 & 0.019 & 0.019 \\
+ & (0.021) & (0.023) & (0.022) \\
+\quad Outstanding debt level (\%) & 0.000 & 0.000 & 0.000 \\
+ & (0.000) & (0.000) & (0.000) \\
+\quad Unemployment rate (\%) & 0.010 & 0.014 & 0.012 \\
+ & (0.008) & (0.009) & (0.008) \\
+\quad Revenue stability (\%) & 0.000 & 0.001 & 0.000 \\
+ & (0.001) & (0.001) & (0.001) \\
+\quad Government revenue (per capita) & -0.001 & -0.004 & -0.002 \\
+ & (0.014) & (0.017) & (0.015) \\
+\quad Excess property tax capacity & 0.050 & 0.072 & 0.059 \\
+ & (0.071) & (0.087) & (0.077) \\
+\quad Fiscal reserve (\%) & -0.006*** & -0.007*** & -0.006*** \\
+ & (0.002) & (0.002) & (0.002) \\
+\quad Budget balance (\%) & 0.000 & 0.000 & 0.000 \\
+ & (0.002) & (0.002) & (0.002) \\
+\midrule
+Stack fixed effects & Yes & Yes & Yes \\
+Observations & 13,734 & 9,407 & 23,141 \\
+Municipalities & 237 & 234 & 239 \\
+Stacks & 103 & 71 & 174 \\
+\bottomrule
+\end{tabular}
+\vspace{0.05in}
+\begin{minipage}{0.96\textwidth}\footnotesize\emph{Notes:} Stacked difference-in-differences on the repeated-event sample. Each column is a separate stacked linear probability model comparing clean operating override events (event years 2005--2019; treated events fully clean of the opposite outcome) against municipalities with no operating override of either type in the $[-2,+2]$ window. The first two columns restrict treated events to successful and failed overrides respectively; the \emph{Any override} column pools both (any override vs.\ no override). The outcome is an indicator for a Moody's rating downgrade relative to the pre-vote baseline rating two years before the event ($t-2$), cumulated through the event year (within 0), the following year (within 1), and two years out (within 2). The pre-period row is a placebo: a $t-1$-versus-$t-2$ rating change regressed on treatment, which should be zero. The override-effect rows report the treatment coefficient at each horizon; the control coefficients below are from the within-2-year model, whose treatment coefficient is the Within 2 yr row. Both columns are override-vs.-no-override contrasts: a failed override is still an override and signals a municipality unable to balance its budget within current resources. All models include the fiscal controls measured at the election fiscal year. Stack fixed effects throughout; standard errors in parentheses clustered by municipality. * p $<$ 0.10, ** p $<$ 0.05, *** p $<$ 0.01.\end{minipage}
+\end{table}
