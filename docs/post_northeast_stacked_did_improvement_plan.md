@@ -1,6 +1,8 @@
 # Post-Northeast Stacked DiD Improvement Plan
 
-> **Status: planned, not implemented.** This is a follow-up extension that complements, and does not replace, the existing event-study repeated-event DiD (`R/12`) or the close-election RDD (`R/16`-`R/20`). It is a deliberate post-Northeast addition beyond the frozen Stata-replication scope.
+> **Status: implemented** in `R/21` (models, diagnostics, triangulation) and `R/22` (publication tables), driven by `R/run_post_northeast_stacked_did.R`. This is a follow-up extension that complements, and does not replace, the existing event-study repeated-event DiD (`R/12`) or the close-election RDD (`R/16`-`R/20`). It is a deliberate post-Northeast addition beyond the frozen Stata-replication scope.
+>
+> **What shipped vs. this plan:** two design points changed during implementation. (1) The published tables are reframed around **override vs. no override** rather than the success$-$failure bridge: the two direction tables (downgrade, upgrade) show success-, failure-, and any-override-vs-no-override columns, each with the pre-period placebo and the within-2 controls; the bridge is still estimated (in the result CSVs) but demoted in the tables. (2) The same-type-clean robustness sample was **dropped** after a check showed it left all conclusions unchanged, so the fully-clean sample is the sole estimation sample.
 
 ## Goal
 
